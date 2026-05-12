@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  basic-checks:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,19 +22,76 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Validate Python files
+      - name: Run unit and smoke tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Compile Python sources
         run: |
           python - << 'PY'
-          import pathlib, py_compile
-          candidates = [pathlib.Path("app.py")]
-          existing = [p for p in candidates if p.exists()]
-          if existing:
-              for p in existing:
-                  py_compile.compile(str(p), doraise=True)
-              print("Compiled:", ", ".join(str(p) for p in existing))
-          else:
-              print("No app.py yet on this branch; skipping compile target.")
+          import pathlib
+          import py_compile
+          import sys
+
+          candidates = [pathlib.Path("app.py"), *sorted(pathlib.Path("src").rglob("*.py"))]
+          existing = [path for path in candidates if path.exists()]
+          if not existing:
+              print("No Python sources found; skipping compile targets.")
+              sys.exit(0)
+
+          for path in existing:
+              py_compile.compile(str(path), doraise=True)
+
+          print("Compiled:", ", ".join(str(path) for path in existing))
           PY
 
-      - name: Run unit tests
-        run: python -m unittest discover -s tests -p 'test_*.py' -v
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ruff lint
+        uses: astral-sh/ruff-action@v3
+        with:
+          src: app.py src tests
+
+      - name: Ruff format check
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: format --check
+          src: app.py src tests
+
+  maintainability:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Ruff
+        run: python -m pip install ruff
+
+      - name: Report complexity and hygiene findings
+        run: |
+          ruff check app.py src tests --select C901,ERA001,ARG001 --output-format=github
