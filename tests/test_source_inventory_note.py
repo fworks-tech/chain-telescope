@@ -18,15 +18,31 @@ class SourceInventoryNoteTests(unittest.TestCase):
 
   def test_issue_mapping_matches_14_to_18_scope(self):
     content = SOURCE_NOTE.read_text(encoding="utf-8")
-    self.assertIn("| #14 | Wire sidebar filters to dashboard data queries", content)
-    self.assertIn("| #15 | Implement market ingestion adapter", content)
-    self.assertIn("| #16 | Implement news/feed ingestion normalization", content)
-    self.assertIn("| #17 | Build alert rules over normalized market", content)
-    self.assertIn("| #18 | Implement newsletter persistence/delivery", content)
+    self.assertIn(
+      "| #14 | Wire sidebar filters to dashboard data queries so selected watchlist/time windows apply consistently to market and feed panels |",
+      content
+    )
+    self.assertIn(
+      "| #15 | Implement market ingestion adapter with Binance default + CoinGecko fallback and graceful degradation when provider config is unset |",
+      content
+    )
+    self.assertIn(
+      "| #16 | Implement news/feed ingestion normalization around RSS/Atom (`feedparser` schema + dedupe + timestamps) with NewsAPI fallback |",
+      content
+    )
+    self.assertIn(
+      "| #17 | Build alert rules over normalized market + high-confidence investor/developer signals, including per-signal confidence metadata |",
+      content
+    )
+    self.assertIn(
+      "| #18 | Implement newsletter persistence/delivery using normalized feed + market deltas, with cached fallback content and environment-based secrets |",
+      content
+    )
 
   def test_newsapi_name_is_consistent(self):
     content = SOURCE_NOTE.read_text(encoding="utf-8")
-    self.assertIn("NewsAPI (free tier)", content)
+    self.assertIn("| NewsAPI / GDELT APIs | API |", content)
+    self.assertIn("| Alerts/news feed | RSS/Atom via `feedparser` (crypto + official blogs + macro) | NewsAPI (free tier) |", content)
     self.assertNotIn("News API aggregator", content)
     self.assertNotIn("News API (free tier)", content)
     self.assertNotIn("NewsApi", content)
