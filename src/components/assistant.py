@@ -4,12 +4,7 @@ import requests
 import streamlit as st
 from streamlit.errors import StreamlitSecretNotFoundError
 
-from src.data.mock_market import (
-    alerts_snapshot,
-    kpi_snapshot_lines,
-    news_snapshot,
-    trending_report_frame,
-)
+from src.data.dashboard_query import load_dashboard_snapshot
 
 DOMAIN_KEYWORDS_ALLOWLIST = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
 MIN_TOKEN_LENGTH = 3
@@ -64,14 +59,15 @@ def _read_secret_or_env(name, default=None):
 
 
 def _build_context(time_window, watchlist):
-    top_trending = trending_report_frame().head(3).to_dict("records")
-    kpis = kpi_snapshot_lines()
+    snapshot = load_dashboard_snapshot(time_window, watchlist)
+    top_trending = snapshot.trending.head(3).to_dict("records")
+    kpis = [f"{item['label']}: {item['value']} ({item['delta']})" for item in snapshot.kpis]
     return {
         "time_window": time_window,
         "watchlist": watchlist,
         "kpis": kpis,
-        "alerts": alerts_snapshot(),
-        "news": news_snapshot(),
+        "alerts": snapshot.alerts,
+        "news": snapshot.news,
         "trending_top3": top_trending,
     }
 
@@ -81,13 +77,14 @@ def _fallback_response(context, reason):
     top_names = ", ".join(row["Asset"] for row in context["trending_top3"])
     kpis = context.get("kpis", [])
     lead_kpi = kpis[0] if kpis else "KPI snapshot unavailable"
+    alert_examples = context["alerts"][:2] if context["alerts"] else ["none"]
     return (
         "I can still summarize the current dashboard context:\n"
         f"- Watchlist: {watchlist}\n"
         f"- Time window: {context['time_window']}\n"
         f"- KPI snapshot: {lead_kpi}\n"
         f"- Top trending assets: {top_names}\n"
-        f"- Active alert examples: {context['alerts'][0]}; {context['alerts'][1]}\n\n"
+        f"- Active alert examples: {alert_examples[0]}; {alert_examples[1] if len(alert_examples) > 1 else 'none'}\n\n"
         f"GPT provider is unavailable ({reason}). Set `OPENAI_API_KEY` in environment or Streamlit secrets to enable live responses."
     )
 

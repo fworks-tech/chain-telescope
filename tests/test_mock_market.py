@@ -1,7 +1,6 @@
 import unittest
 
 from src.data.mock_market import (
-    PRICE_TREND_DAYS,
     alert_snapshot_lines,
     alerts_snapshot,
     kpi_snapshot,
@@ -18,10 +17,11 @@ from src.data.mock_market import (
 
 class MockMarketTests(unittest.TestCase):
     def test_price_trend_series_lengths(self):
-        dates, prices, trend = price_trend_series()
-        self.assertEqual(len(dates), PRICE_TREND_DAYS)
-        self.assertEqual(len(prices), PRICE_TREND_DAYS)
-        self.assertEqual(len(trend), PRICE_TREND_DAYS)
+        days = 30
+        dates, prices, trend = price_trend_series(days=days)
+        self.assertEqual(len(dates), days)
+        self.assertEqual(len(prices), days)
+        self.assertEqual(len(trend), days)
 
     def test_trending_report_frame_has_expected_assets(self):
         frame = trending_report_frame()

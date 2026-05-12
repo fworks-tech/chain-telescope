@@ -1,19 +1,19 @@
 import plotly.graph_objects as go
 import streamlit as st
 
-from src.data.mock_market import risk_graph_colors, risk_graph_labels, risk_graph_scores
+from src.data.dashboard_query import DashboardSnapshot
 
 
-def render_risk_graph():
+def render_risk_graph(snapshot: DashboardSnapshot):
     st.markdown('<div class="panel">', unsafe_allow_html=True)
     st.subheader("Risk Graph")
     rfig = go.Figure(
         data=[
             go.Bar(
-                x=risk_graph_scores(),
-                y=risk_graph_labels(),
+                x=snapshot.risk_scores,
+                y=snapshot.risk_labels,
                 orientation="h",
-                marker=dict(color=risk_graph_colors()),
+                marker=dict(color=snapshot.risk_colors),
             )
         ]
     )

@@ -48,7 +48,11 @@ jobs:
           import py_compile
           import sys
 
-          candidates = [pathlib.Path("app.py"), *sorted(pathlib.Path("src").rglob("*.py"))]
+          candidates = [
+              pathlib.Path("app.py"),
+              *sorted(pathlib.Path("src").rglob("*.py")),
+              *sorted(pathlib.Path("pages").rglob("*.py")),
+          ]
           existing = [path for path in candidates if path.exists()]
           if not existing:
               print("No Python sources found; skipping compile targets.")
@@ -59,6 +63,9 @@ jobs:
 
           print("Compiled:", ", ".join(str(path) for path in existing))
           PY
+
+      - name: Streamlit entrypoint smoke check
+        run: python -c "import importlib; importlib.import_module('app')"
 
   lint:
     runs-on: ubuntu-latest

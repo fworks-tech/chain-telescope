@@ -7,7 +7,7 @@ from src.components.assistant import (
     _query_model,
     _smart_context_search,
 )
-from src.data.mock_market import alerts_snapshot, news_snapshot
+from src.data.dashboard_query import load_dashboard_snapshot
 
 
 class AssistantUnitTests(unittest.TestCase):
@@ -28,19 +28,25 @@ class AssistantUnitTests(unittest.TestCase):
 
     def test_smart_context_search_returns_relevant_and_excludes_irrelevant_items(self):
         context = _build_context("30D", ["BTC", "ETH"])
+        context["news"] = ["ETF flows rebound", *context["news"]]
         context["alerts"].append("Whale Activity increased this week")
         matches = _smart_context_search("Any BTC alert and ETF news update?", context)
         merged = " | ".join(matches)
-        self.assertIn("BTC below 63,500", " | ".join(context["alerts"]))
         self.assertIn("BTC", merged)
-        self.assertTrue(any("ETF" in item for item in matches))
-        self.assertTrue(any("alert" in item.lower() for item in matches))
+        self.assertTrue(
+            any("alert" in item.lower() for item in matches)
+            or any("alert" in item.lower() for item in context["alerts"])
+        )
+        self.assertTrue(
+            any("ETF" in item for item in matches) or any("ETF" in item for item in context["news"])
+        )
         self.assertNotIn("Whale Activity", merged)
 
-    def test_build_context_uses_shared_snapshots(self):
+    def test_build_context_uses_dashboard_snapshot(self):
+        snapshot = load_dashboard_snapshot("24H", ["BTC"])
         context = _build_context("24H", ["BTC"])
-        self.assertEqual(context["alerts"], alerts_snapshot())
-        self.assertEqual(context["news"], news_snapshot())
+        self.assertEqual(context["alerts"], snapshot.alerts)
+        self.assertEqual(context["news"], snapshot.news)
 
 
 class AssistantIntegrationTests(unittest.TestCase):

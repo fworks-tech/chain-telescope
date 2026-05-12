@@ -1,27 +1,27 @@
 import plotly.graph_objects as go
 import streamlit as st
 
-from src.data.mock_market import price_trend_series
+from src.data.dashboard_query import DashboardSnapshot
 
 
-def render_price_trend():
+def render_price_trend(snapshot: DashboardSnapshot):
     st.markdown('<div class="panel">', unsafe_allow_html=True)
     st.subheader("Price Trend")
-    dates, prices, trend = price_trend_series()
+    st.caption(f"Primary asset: {snapshot.primary_asset} • Source: {snapshot.price_source}")
     fig = go.Figure()
     fig.add_trace(
         go.Scatter(
-            x=dates,
-            y=prices,
-            name="BTC",
+            x=snapshot.price_dates,
+            y=snapshot.price_values,
+            name=snapshot.primary_asset,
             mode="lines",
             line=dict(color="#3b5bff", width=2.4),
         )
     )
     fig.add_trace(
         go.Scatter(
-            x=dates,
-            y=trend,
+            x=snapshot.price_dates,
+            y=snapshot.price_trend,
             name="Trend",
             mode="lines",
             line=dict(color="#94a3ff", width=2, dash="dot"),

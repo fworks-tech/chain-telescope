@@ -1,0 +1,5 @@
+from src.app_shell import render_sidebar_filters
+from src.views.news_view import render_news_page
+
+time_window, watchlist = render_sidebar_filters()
+render_news_page(time_window, watchlist)
