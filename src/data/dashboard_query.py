@@ -35,12 +35,16 @@ class DashboardSnapshot:
 
 
 def load_dashboard_snapshot(
-    time_window: str, watchlist: list[str] | None = None
+    time_window: str,
+    watchlist: list[str] | None = None,
+    market_source: str = "auto",
 ) -> DashboardSnapshot:
     selected = watchlist or ["BTC"]
     primary_asset = selected[0]
     days = TIME_WINDOW_DAYS.get(time_window, 30)
-    dates, prices, trend, source = fetch_price_trend(primary_asset, days, time_window)
+    dates, prices, trend, source = fetch_price_trend(
+        primary_asset, days, time_window, market_source=market_source
+    )
 
     trending = trending_report_frame(selected)
     news_items = load_news_items(selected)

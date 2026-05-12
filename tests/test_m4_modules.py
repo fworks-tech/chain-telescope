@@ -31,11 +31,26 @@ class DashboardQueryTests(unittest.TestCase):
 
 
 class MarketServiceTests(unittest.TestCase):
-    @patch("src.data.market.service.binance.fetch_binance_series", return_value=None)
-    @patch("src.data.market.service.coingecko.fetch_coingecko_series", return_value=None)
-    def test_fetch_price_trend_falls_back_to_mock(self, _mock_coingecko, _mock_binance):
+    @patch("src.data.market.coinbase.fetch_coinbase_series", return_value=None)
+    @patch("src.data.market.coingecko.fetch_coingecko_series", return_value=None)
+    @patch("src.data.market.binance.fetch_binance_series", return_value=None)
+    def test_fetch_price_trend_falls_back_to_mock(
+        self, _mock_binance, _mock_coingecko, _mock_coinbase
+    ):
         _, _, _, source = fetch_price_trend("BTC", 30, "30D")
         self.assertEqual(source, "mock")
+
+    @patch("src.data.market.coinbase.fetch_coinbase_series", return_value=None)
+    @patch("src.data.market.coingecko.fetch_coingecko_series", return_value=None)
+    @patch("src.data.market.binance.fetch_binance_series", return_value=None)
+    def test_fetch_price_trend_mock_source_skips_remote_providers(
+        self, _mock_binance, _mock_coingecko, _mock_coinbase
+    ):
+        _, _, _, source = fetch_price_trend("BTC", 30, "30D", market_source="mock")
+        self.assertEqual(source, "mock")
+        _mock_binance.assert_not_called()
+        _mock_coingecko.assert_not_called()
+        _mock_coinbase.assert_not_called()
 
     @patch(
         "src.data.market.service.binance.fetch_binance_series",

@@ -58,8 +58,8 @@ def _read_secret_or_env(name, default=None):
     return os.getenv(name, default)
 
 
-def _build_context(time_window, watchlist):
-    snapshot = load_dashboard_snapshot(time_window, watchlist)
+def _build_context(time_window, watchlist, market_source="auto"):
+    snapshot = load_dashboard_snapshot(time_window, watchlist, market_source)
     top_trending = snapshot.trending.head(3).to_dict("records")
     kpis = [f"{item['label']}: {item['value']} ({item['delta']})" for item in snapshot.kpis]
     return {
@@ -159,7 +159,7 @@ def _query_model(prompt, context, history=None):
         return _fallback_response(context, "provider response parse failed")
 
 
-def render_assistant_panel(time_window, watchlist):
+def render_assistant_panel(time_window, watchlist, market_source="auto"):
     with st.container(border=True):
         st.subheader("AI Assistant")
         st.caption(
@@ -169,7 +169,7 @@ def render_assistant_panel(time_window, watchlist):
         if "assistant_messages" not in st.session_state:
             st.session_state.assistant_messages = []
 
-        context = _build_context(time_window, watchlist)
+        context = _build_context(time_window, watchlist, market_source)
         for msg in st.session_state.assistant_messages:
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
