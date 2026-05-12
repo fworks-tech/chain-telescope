@@ -17,12 +17,13 @@ class AssistantUnitTests(unittest.TestCase):
       {"role": "assistant", "content": "ok"},
     ])
 
-  def test_smart_context_search_returns_relevant_items(self):
+  def test_smart_context_search_returns_relevant_and_excludes_irrelevant_items(self):
     context = _build_context("30D", ["BTC", "ETH"])
     matches = _smart_context_search("Any BTC alert and ETF news update?", context)
     merged = " | ".join(matches)
     self.assertIn("BTC", merged)
     self.assertTrue(any("ETF" in item for item in matches))
+    self.assertTrue(any("alert" in item.lower() for item in matches))
     self.assertFalse(any("Whale Activity" in item for item in matches))
 
 

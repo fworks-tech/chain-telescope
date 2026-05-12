@@ -14,7 +14,7 @@ KPIS = [
   "Risk Index: 62 / 100 (Elevated)",
   "Active Alerts: 7 (3 triggered today)",
 ]
-ALLOWED_SHORT_TOKENS = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
+ALLOWED_SHORT_DOMAIN_TOKENS = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
 MAX_SMART_MATCHES = 5
 MAX_HISTORY_MESSAGES = 6
 
@@ -31,7 +31,7 @@ def _normalize_history(messages):
 
 def _smart_context_search(prompt, context):
   tokens = [t.strip(".,:;!?()[]{}\"'").lower() for t in prompt.split()]
-  tokens = [t for t in tokens if t in ALLOWED_SHORT_TOKENS or len(t) >= 3]
+  tokens = [t for t in tokens if t in ALLOWED_SHORT_DOMAIN_TOKENS or len(t) >= 3]
   if not tokens:
     return []
 
@@ -48,6 +48,8 @@ def _smart_context_search(prompt, context):
   for text, lowered in lowered_candidates:
     if any(token in lowered for token in tokens):
       matches.append(text)
+      if len(matches) >= MAX_SMART_MATCHES:
+        break
   return matches[:MAX_SMART_MATCHES]
 
 
