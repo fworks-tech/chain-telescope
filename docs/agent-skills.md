@@ -25,3 +25,27 @@ Keep this repository reliable, readable, and automatable.
 - Confirm README clarity
 - Confirm CI passing
 - Confirm changelog/update notes prepared
+
+
+### 6. Pull Request Skill
+- Validate current branch diff against main branch
+- Automatically analyze and describe changed files
+- Group files by scope (data, ui, docs, ci, automation, other) if many changes
+- Generate conventional commit formatted PR titles
+- Populate PR description with structured template
+- Enforce template requirements (Summary, Type of Change, Scope, Validation, etc)
+- Validate conventional commits standards compliance
+
+**Usage:**
+```bash
+python scripts/pr-skill.py create --description "..." --type feat --scope auth
+python scripts/pr-skill.py validate
+python scripts/pr-skill.py summary
+```
+
+**Features:**
+- Automatic file grouping for large changesets (10+ files)
+- Conventional commits format: `<type>[scope]: <description>`
+- Diff statistics (files, additions, deletions)
+- Pre-creation review and approval step
+- Draft PR option for work-in-progress
