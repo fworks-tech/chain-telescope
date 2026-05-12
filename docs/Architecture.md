@@ -10,6 +10,7 @@ The product direction in [README.md](../README.md) calls for Python data pipelin
 
 ## Related documentation
 
+- [CHANGELOG.md](../CHANGELOG.md) — release history
 - [configuration.md](configuration.md) — environment variables and secrets
 - [m4-data-pipelines.md](m4-data-pipelines.md) — snapshot assembly, ingestion modules, and issue mapping
 - [validation-and-manual-qa.md](validation-and-manual-qa.md) — automated checks and manual smoke tests

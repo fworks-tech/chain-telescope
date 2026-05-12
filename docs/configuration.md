@@ -65,6 +65,7 @@ NEWSLETTER_PROVIDER=stub
 
 ## Related docs
 
+- [CHANGELOG.md](../CHANGELOG.md)
 - [Architecture.md](Architecture.md)
 - [m4-data-pipelines.md](m4-data-pipelines.md)
 - [validation-and-manual-qa.md](validation-and-manual-qa.md)

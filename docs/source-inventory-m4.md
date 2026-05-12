@@ -1,6 +1,6 @@
 # M4 Source Discovery Note: Market, Feeds, Investors, Core Developers
 
-This note inventories practical, local/CI-friendly data source options for M4 ingestion planning. It supports [#22](https://github.com/fworks-tech/Jupyter-Crypto-Wizard/issues/22).
+This note inventories practical, local/CI-friendly data source options for M4 ingestion planning. It supports [#22](https://github.com/fworks-tech/Jupyter-Crypto-Wizard/issues/22). The current implementation path is documented in [m4-data-pipelines.md](m4-data-pipelines.md).
 
 ## 1) Crypto market data
 

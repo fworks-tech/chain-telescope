@@ -58,14 +58,23 @@ streamlit run app.py
 
 Open the local URL shown in the terminal (default: http://localhost:8501).
 
+Optional launcher from the repository root:
+
+```powershell
+.\scripts\run-app.ps1
+```
+
+```bash
+python scripts/run_app.py
+```
+
 ## Validation
 
-Confirm the app behaves as expected before opening a pull request:
+Confirm the app behaves as expected before opening a pull request. The full automated and manual checklist lives in [`docs/validation-and-manual-qa.md`](docs/validation-and-manual-qa.md).
 
 - [ ] `streamlit run app.py` starts without import errors
-- [ ] Dashboard, charts, and tables render in the browser
+- [ ] Dashboard, Alerts, News, Risk, and Newsletter routes render in the browser
 - [ ] Newsletter subscribe shows success for a valid email and an error for invalid input
-- [ ] `python -m py_compile app.py` passes (same compile check as CI)
 - [ ] `python -m unittest discover -s tests -p 'test_*.py'` passes
 - [ ] `ruff check app.py src tests` and `ruff format --check app.py src tests` pass when Ruff is installed locally
 - [ ] `python -m unittest tests/test_source_inventory_note.py` passes for the M4 source inventory note contract
@@ -107,7 +116,6 @@ If credentials are missing, rate-limited, or provider calls fail, the assistant 
 
 ### Follow-up mapping
 
-- Richer grounding from data-backed panels and ingestion: #14–#18
 - Source discovery follow-through: #22 and [`docs/source-inventory-m4.md`](docs/source-inventory-m4.md)
 - Suggested next issues: chat persistence/history storage, retrieval/tool use against ingested datasets, and source citation rendering
 
@@ -120,8 +128,6 @@ If credentials are missing, rate-limited, or provider calls fail, the assistant 
 - Market and feed providers fall back to mock or cached-safe output when remote configuration is unset or requests fail
 - Newsletter delivery uses local persistence with a stub provider unless `NEWSLETTER_PROVIDER` and related secrets are configured
 - Scheduled outbound jobs are not running in the repository yet
-
-### Provider configuration
 
 Optional environment variables and Streamlit secrets are documented in [`docs/configuration.md`](docs/configuration.md).
 
@@ -157,9 +163,11 @@ CI does not start a browser or run Playwright screenshot comparisons yet. See th
 - `src/` — UI components, query layer, ingestion helpers, and validation
 - `requirements.txt` — Python dependencies
 - `docs/` — architecture, configuration, validation, and automation playbooks
+- `CHANGELOG.md` — release history and milestone notes
 
 ## Documentation
 
+- [`CHANGELOG.md`](CHANGELOG.md) — release history
 - [`docs/Architecture.md`](docs/Architecture.md) — system structure and runtime flow
 - [`docs/configuration.md`](docs/configuration.md) — environment variables and secrets
 - [`docs/m4-data-pipelines.md`](docs/m4-data-pipelines.md) — dashboard snapshots, ingestion, alerts, and newsletter modules
@@ -209,7 +217,7 @@ System structure, runtime flow, data boundaries, and planned evolution are docum
 ### Release / docs gate
 - [ ] README explains how to run and validate the app
 - [ ] CI is green on the branch
-- [ ] Changelog or update notes are prepared when shipping a release
+- [ ] `CHANGELOG.md` is updated when shipping a release
 
 ## License
 

@@ -47,5 +47,6 @@ Any behavior changes, migrations, or known limitations.
 ## Checklist
 - [ ] Conventional commit messages used
 - [ ] README/docs updated (if needed)
+- [ ] `CHANGELOG.md` updated for user-visible release changes
 - [ ] No secrets added
 - [ ] Ready for review
