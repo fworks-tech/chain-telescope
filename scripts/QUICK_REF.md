@@ -61,7 +61,10 @@ git checkout -b feat/my-feature
 git add .
 git commit -m "working changes"
 git push origin feat/my-feature
+python -m unittest discover -s tests -p 'test_*.py' -v
 ```
+
+Update `CHANGELOG.md` when the change is user-visible or part of a release milestone.
 
 ### Create the PR
 ```bash

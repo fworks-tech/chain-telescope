@@ -97,6 +97,7 @@ Navigation is configured in `app.py` with `st.navigation`. Sidebar filters are r
 
 ## Related docs
 
+- [CHANGELOG.md](../CHANGELOG.md)
 - [Architecture.md](Architecture.md)
 - [configuration.md](configuration.md)
 - [validation-and-manual-qa.md](validation-and-manual-qa.md)

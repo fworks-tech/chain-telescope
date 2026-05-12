@@ -3,8 +3,10 @@ from src.data.alerts.rules import DEFAULT_RULES
 from src.data.dashboard_query import load_dashboard_snapshot
 
 
-def render_alerts_page(time_window: str, watchlist: list[str]):
-    snapshot = load_dashboard_snapshot(time_window, watchlist)
+def render_alerts_page(
+    time_window: str, watchlist: list[str], market_source: str, trend_filter: str
+):
+    snapshot = load_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)
     st.markdown("## Alerts")
     st.caption("Rule-driven alerts for the selected watchlist and time window.")
     st.markdown("### Active alerts")

@@ -25,12 +25,12 @@ When credentials are missing or provider calls fail, the assistant returns a loc
 
 | Variable | Required | Default | Purpose |
 |---|---|---|---|
-| `MARKET_PROVIDER` | No | `auto` | `auto`, `binance`, or `coingecko` |
+| `MARKET_PROVIDER` | No | `auto` | `auto`, `binance`, `coingecko`, `coinbase`, or `mock` (sidebar Source filter overrides this per session) |
 | `BINANCE_BASE_URL` | No | `https://api.binance.com` | Binance REST base URL |
 | `COINGECKO_BASE_URL` | No | `https://api.coingecko.com/api/v3` | CoinGecko REST base URL |
 | `MARKET_REQUEST_TIMEOUT_SECONDS` | No | `10` | HTTP timeout for market requests |
 
-`auto` tries Binance first, then CoinGecko, then mock series from `src/data/mock_market.py`.
+`auto` tries Binance, then CoinGecko, then Coinbase, then mock series from `src/data/mock_market.py`.
 
 ## News feeds
 
@@ -65,6 +65,7 @@ NEWSLETTER_PROVIDER=stub
 
 ## Related docs
 
+- [CHANGELOG.md](../CHANGELOG.md)
 - [Architecture.md](Architecture.md)
 - [m4-data-pipelines.md](m4-data-pipelines.md)
 - [validation-and-manual-qa.md](validation-and-manual-qa.md)

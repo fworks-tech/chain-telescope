@@ -1,28 +1,20 @@
 from datetime import datetime
 
 import pandas as pd
-from src.data.market import binance, coingecko
+from src.data.market import binance, coinbase, coingecko
 from src.data.market.config import load_market_config
 from src.data.mock_market import TIME_WINDOW_DAYS, price_trend_series
 
 
-def fetch_price_trend(asset: str, days: int, time_window: str):
-    config = load_market_config()
-    provider = config.provider.lower()
-    providers = []
-    if provider == "binance":
-        providers = ["binance"]
-    elif provider == "coingecko":
-        providers = ["coingecko"]
-    else:
-        providers = ["binance", "coingecko"]
+def fetch_price_trend(asset: str, days: int, time_window: str, market_source: str | None = None):
+    provider = (market_source or load_market_config().provider).lower()
+    if provider == "mock":
+        return _mock_series(asset, days, time_window)
 
+    providers = _provider_chain(provider)
     for name in providers:
         try:
-            if name == "binance":
-                result = binance.fetch_binance_series(asset, days)
-            else:
-                result = coingecko.fetch_coingecko_series(asset, days)
+            result = _fetch_provider_series(name, asset, days)
             if result:
                 dates, prices, source = result
                 dates = _normalize_dates(dates)
@@ -31,6 +23,30 @@ def fetch_price_trend(asset: str, days: int, time_window: str):
         except Exception:
             continue
 
+    return _mock_series(asset, days, time_window)
+
+
+def _provider_chain(provider: str) -> list[str]:
+    if provider == "binance":
+        return ["binance"]
+    if provider == "coingecko":
+        return ["coingecko"]
+    if provider == "coinbase":
+        return ["coinbase"]
+    return ["binance", "coingecko", "coinbase"]
+
+
+def _fetch_provider_series(provider: str, asset: str, days: int):
+    if provider == "binance":
+        return binance.fetch_binance_series(asset, days)
+    if provider == "coingecko":
+        return coingecko.fetch_coingecko_series(asset, days)
+    if provider == "coinbase":
+        return coinbase.fetch_coinbase_series(asset, days)
+    return None
+
+
+def _mock_series(asset: str, days: int, time_window: str):
     fallback_days = TIME_WINDOW_DAYS.get(time_window, days)
     dates, prices, trend = price_trend_series(
         asset=asset, days=fallback_days, time_window=time_window

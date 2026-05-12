@@ -58,8 +58,8 @@ def _read_secret_or_env(name, default=None):
     return os.getenv(name, default)
 
 
-def _build_context(time_window, watchlist):
-    snapshot = load_dashboard_snapshot(time_window, watchlist)
+def _build_context(time_window, watchlist, market_source="auto", trend_filter="all"):
+    snapshot = load_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)
     top_trending = snapshot.trending.head(3).to_dict("records")
     kpis = [f"{item['label']}: {item['value']} ({item['delta']})" for item in snapshot.kpis]
     return {
@@ -159,27 +159,25 @@ def _query_model(prompt, context, history=None):
         return _fallback_response(context, "provider response parse failed")
 
 
-def render_assistant_panel(time_window, watchlist):
-    st.markdown('<div class="panel">', unsafe_allow_html=True)
-    st.subheader("AI Assistant")
-    st.caption(
-        "Dashboard-grounded help for watchlist, KPIs, alerts, and news. Not financial advice."
-    )
+def render_assistant_panel(time_window, watchlist, market_source="auto", trend_filter="all"):
+    with st.container(border=True):
+        st.subheader("AI Assistant")
+        st.caption(
+            "Dashboard-grounded help for watchlist, KPIs, alerts, and news. Not financial advice."
+        )
 
-    if "assistant_messages" not in st.session_state:
-        st.session_state.assistant_messages = []
+        if "assistant_messages" not in st.session_state:
+            st.session_state.assistant_messages = []
 
-    context = _build_context(time_window, watchlist)
-    for msg in st.session_state.assistant_messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+        context = _build_context(time_window, watchlist, market_source, trend_filter)
+        for msg in st.session_state.assistant_messages:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
 
-    prompt = st.chat_input("Ask about the current dashboard context")
-    if prompt:
-        history = st.session_state.assistant_messages.copy()
-        st.session_state.assistant_messages.append({"role": "user", "content": prompt})
-        answer = _query_model(prompt, context, history=history)
-        st.session_state.assistant_messages.append({"role": "assistant", "content": answer})
-        st.rerun()
-
-    st.markdown("</div>", unsafe_allow_html=True)
+        prompt = st.chat_input("Ask about the current dashboard context")
+        if prompt:
+            history = st.session_state.assistant_messages.copy()
+            st.session_state.assistant_messages.append({"role": "user", "content": prompt})
+            answer = _query_model(prompt, context, history=history)
+            st.session_state.assistant_messages.append({"role": "assistant", "content": answer})
+            st.rerun()

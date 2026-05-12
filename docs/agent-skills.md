@@ -24,7 +24,7 @@ Keep this repository reliable, readable, and automatable.
 ### 5. Release Gate
 - Confirm README clarity
 - Confirm CI passing
-- Confirm changelog/update notes prepared
+- Confirm `CHANGELOG.md` is updated for release milestones
 
 
 ### 6. Pull Request Skill

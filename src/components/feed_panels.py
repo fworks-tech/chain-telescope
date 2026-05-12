@@ -5,11 +5,21 @@ import streamlit as st
 from src.data.dashboard_query import DashboardSnapshot
 
 
+def _render_feed_items(items: list[str], empty_message: str):
+    if items:
+        for line in items:
+            st.markdown(f'<p class="feed-item">{escape(line)}</p>', unsafe_allow_html=True)
+    else:
+        st.caption(empty_message)
+
+
 def render_alerts_panel(snapshot: DashboardSnapshot):
-    lines = "".join(f"<p>{line}</p>" for line in snapshot.alerts)
-    st.markdown(f'<div class="panel"><h4>Alerts</h4>{lines}</div>', unsafe_allow_html=True)
+    with st.container(border=True):
+        st.subheader("Alerts")
+        _render_feed_items(snapshot.alerts, "No active alerts for this watchlist window.")
 
 
 def render_news_panel(snapshot: DashboardSnapshot):
-    lines = "".join(f"<p>{escape(line)}</p>" for line in snapshot.news)
-    st.markdown(f'<div class="panel"><h4>News Snapshot</h4>{lines}</div>', unsafe_allow_html=True)
+    with st.container(border=True):
+        st.subheader("News snapshot")
+        _render_feed_items(snapshot.news, "No news items matched the current watchlist.")

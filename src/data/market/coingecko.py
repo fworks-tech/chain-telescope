@@ -1,13 +1,8 @@
 import requests
+from src.data.assets import COINGECKO_IDS
 from src.data.market.config import load_market_config
 
-ASSET_IDS = {
-    "BTC": "bitcoin",
-    "ETH": "ethereum",
-    "SOL": "solana",
-    "BNB": "binancecoin",
-    "XRP": "ripple",
-}
+ASSET_IDS = COINGECKO_IDS
 
 
 def fetch_coingecko_series(asset: str, days: int):

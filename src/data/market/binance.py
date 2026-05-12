@@ -1,13 +1,8 @@
 import requests
+from src.data.assets import BINANCE_SYMBOLS
 from src.data.market.config import load_market_config
 
-ASSET_SYMBOLS = {
-    "BTC": "BTCUSDT",
-    "ETH": "ETHUSDT",
-    "SOL": "SOLUSDT",
-    "BNB": "BNBUSDT",
-    "XRP": "XRPUSDT",
-}
+ASSET_SYMBOLS = BINANCE_SYMBOLS
 
 
 def fetch_binance_series(asset: str, days: int):

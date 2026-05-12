@@ -19,6 +19,7 @@ from src.data.news.ingestion import load_news_items
 class DashboardSnapshot:
     time_window: str
     watchlist: list[str]
+    trend_filter: str
     primary_asset: str
     price_dates: list
     price_values: list
@@ -35,14 +36,19 @@ class DashboardSnapshot:
 
 
 def load_dashboard_snapshot(
-    time_window: str, watchlist: list[str] | None = None
+    time_window: str,
+    watchlist: list[str] | None = None,
+    market_source: str = "auto",
+    trend_filter: str = "all",
 ) -> DashboardSnapshot:
     selected = watchlist or ["BTC"]
     primary_asset = selected[0]
     days = TIME_WINDOW_DAYS.get(time_window, 30)
-    dates, prices, trend, source = fetch_price_trend(primary_asset, days, time_window)
+    dates, prices, trend, source = fetch_price_trend(
+        primary_asset, days, time_window, market_source=market_source
+    )
 
-    trending = trending_report_frame(selected)
+    trending = trending_report_frame(selected, trend_filter)
     news_items = load_news_items(selected)
     news_lines = [item.title for item in news_items[:3]] or [
         "No news items available for the current watchlist."
@@ -51,6 +57,7 @@ def load_dashboard_snapshot(
     return DashboardSnapshot(
         time_window=time_window,
         watchlist=selected,
+        trend_filter=trend_filter,
         primary_asset=primary_asset,
         price_dates=dates,
         price_values=prices,

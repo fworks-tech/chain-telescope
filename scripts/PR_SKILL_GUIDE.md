@@ -191,6 +191,7 @@ Any behavior changes, migrations, or known limitations.
 ## Checklist
 - [ ] Conventional commit messages used
 - [ ] README/docs updated (if needed)
+- [ ] `CHANGELOG.md` updated for user-visible release changes
 - [ ] No secrets added
 - [ ] Ready for review
 ```
@@ -259,7 +260,9 @@ chore(deps): Update pandas dependency
 5. **Validate format**:
    ```bash
    python scripts/pr-skill.py validate
+   python -m unittest discover -s tests -p 'test_*.py' -v
    ```
+6. **Update `CHANGELOG.md`** when the change is user-visible or part of a release milestone
 
 ## After Creating a PR
 
