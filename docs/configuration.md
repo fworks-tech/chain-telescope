@@ -52,7 +52,7 @@ Subscriptions are stored in `newsletter_subscriptions.json` under `NEWSLETTER_DA
 
 ## Local data directory
 
-Runtime newsletter files live under `/data/` at the repository root. That path is gitignored. Application code under `src/data/` is source, not runtime storage.
+Runtime newsletter files live under `data/` at the repository root by default. That path is gitignored. Application code under `src/data/` is source, not runtime storage.
 
 ## Example `.env`
 

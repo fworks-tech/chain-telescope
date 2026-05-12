@@ -24,5 +24,5 @@ def render_price_trend(snapshot: DashboardSnapshot):
     line=dict(color="#94a3ff", width=2, dash="dot"),
   ))
   fig.update_layout(height=320, margin=dict(l=4, r=4, t=6, b=4), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-  st.plotly_chart(fig, width="stretch")
+  st.plotly_chart(fig, use_container_width=True)
   st.markdown('</div>', unsafe_allow_html=True)

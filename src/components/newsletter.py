@@ -32,6 +32,6 @@ def render_newsletter():
         "Created": [item.created_at for item in subscriptions],
       },
       hide_index=True,
-      width="stretch",
+      use_container_width=True,
     )
   st.markdown('</div>', unsafe_allow_html=True)

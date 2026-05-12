@@ -26,7 +26,11 @@ jobs:
         run: |
           python - << 'PY'
           import pathlib, py_compile
-          candidates = [pathlib.Path("app.py"), *pathlib.Path("src").rglob("*.py")]
+          candidates = [
+              pathlib.Path("app.py"),
+              *pathlib.Path("src").rglob("*.py"),
+              *pathlib.Path("pages").rglob("*.py"),
+          ]
           for path in candidates:
               py_compile.compile(str(path), doraise=True)
           print("Compiled:", ", ".join(str(path) for path in candidates))

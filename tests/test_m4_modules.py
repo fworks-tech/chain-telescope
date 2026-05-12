@@ -35,6 +35,12 @@ class MarketServiceTests(unittest.TestCase):
     _, _, _, source = fetch_price_trend("BTC", 30, "30D")
     self.assertEqual(source, "mock")
 
+  @patch("src.data.market.service.binance.fetch_binance_series", return_value=([1715683200000, 1715769600000], [62000.0, 62500.0], "binance"))
+  def test_fetch_price_trend_normalizes_provider_dates(self, _mock_binance):
+    dates, _, _, source = fetch_price_trend("BTC", 2, "24H")
+    self.assertEqual(source, "binance")
+    self.assertTrue(all(isinstance(date, datetime) for date in dates))
+
 
 class NewsIngestionTests(unittest.TestCase):
   @patch("src.data.news.ingestion._parse_feed", return_value=[])
