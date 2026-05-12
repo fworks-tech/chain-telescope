@@ -85,7 +85,7 @@ Assistant provider settings are read from environment variables or Streamlit sec
 - `OPENAI_MODEL` (default `gpt-4o-mini`)
 - `OPENAI_TIMEOUT_SECONDS` (default `15`)
 
-When these values are absent or the provider fails, the assistant degrades to local context summaries and does not block the dashboard.
+When these values are absent or the provider fails, the assistant degrades to local context summaries and does not block the dashboard. The assistant also forwards recent chat history and a lightweight keyword-based "smart match" slice of dashboard context to keep responses grounded in product panels.
 
 ## Dependencies
 

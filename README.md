@@ -87,6 +87,12 @@ Use environment variables or Streamlit secrets (`.streamlit/secrets.toml`), neve
 
 If credentials are missing, rate-limited, or provider calls fail, the assistant returns a safe local fallback summary instead of crashing.
 
+### Provider and interface choice (current)
+
+- **Interface now:** Python/Streamlit in-app chat panel (MVP).
+- **Messenger channels (WhatsApp/Telegram):** out of scope for this issue and planned as a later delivery surface.
+- **Provider strategy:** OpenAI-compatible endpoint so teams can compare providers by model quality, latency, and cost without changing UI flow. Use `OPENAI_BASE_URL` + `OPENAI_MODEL` for A/B comparisons.
+
 ### Product boundaries
 
 - Assistant responses are informational, not financial advice

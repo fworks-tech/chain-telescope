@@ -16,6 +16,38 @@ KPIS = [
 ]
 
 
+def _normalize_history(messages):
+  history = []
+  for msg in messages or []:
+    role = msg.get("role")
+    content = msg.get("content")
+    if role in {"user", "assistant"} and isinstance(content, str) and content.strip():
+      history.append({"role": role, "content": content.strip()})
+  return history
+
+
+def _smart_context_search(prompt, context):
+  tokens = [t.strip(".,:;!?()[]{}\"'").lower() for t in prompt.split()]
+  tokens = [t for t in tokens if len(t) >= 3]
+  if not tokens:
+    return []
+
+  candidates = [
+    f"Watchlist: {', '.join(context['watchlist']) if context['watchlist'] else 'none'}",
+    *context["kpis"],
+    *context["alerts"],
+    *context["news"],
+    *(f"Trending {row['Asset']}: {row['7D Change']} | {row['Sentiment']} | Risk {row['Risk']}" for row in context["trending_top3"]),
+  ]
+
+  matches = []
+  for text in candidates:
+    lowered = text.lower()
+    if any(token in lowered for token in tokens):
+      matches.append(text)
+  return matches[:5]
+
+
 def _read_secret_or_env(name, default=None):
   try:
     if name in st.secrets:
@@ -50,7 +82,7 @@ def _fallback_response(context, reason):
   )
 
 
-def _query_model(prompt, context):
+def _query_model(prompt, context, history=None):
   api_key = _read_secret_or_env("OPENAI_API_KEY", "")
   if not api_key:
     return _fallback_response(context, "missing credentials")
@@ -70,6 +102,7 @@ def _query_model(prompt, context):
     "Offer practical next-step suggestions based on the shown dashboard panels."
   )
 
+  relevant_matches = _smart_context_search(prompt, context)
   user_prompt = (
     f"Question: {prompt}\n\n"
     f"Context:\n"
@@ -79,13 +112,16 @@ def _query_model(prompt, context):
     f"- Alerts: {', '.join(context['alerts'])}\n"
     f"- News: {', '.join(context['news'])}\n"
     f"- Trending Top3: {context['trending_top3']}\n"
+    f"- Smart Matches: {relevant_matches if relevant_matches else 'none'}\n"
   )
 
   headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+  conversation = _normalize_history(history)[-6:]
   body = {
     "model": model,
     "messages": [
       {"role": "system", "content": system_prompt},
+      *conversation,
       {"role": "user", "content": user_prompt},
     ],
     "temperature": 0.2,
@@ -129,7 +165,7 @@ def render_assistant_panel(time_window, watchlist):
     st.session_state.assistant_messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
       st.markdown(prompt)
-    answer = _query_model(prompt, context)
+    answer = _query_model(prompt, context, history=st.session_state.assistant_messages[:-1])
     with st.chat_message("assistant"):
       st.markdown(answer)
     st.session_state.assistant_messages.append({"role": "assistant", "content": answer})
