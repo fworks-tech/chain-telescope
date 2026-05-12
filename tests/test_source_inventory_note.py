@@ -63,6 +63,7 @@ class SourceInventoryNoteTests(unittest.TestCase):
     self.assertNotRegex(content, r"News API aggregator")
     self.assertNotRegex(content, r"News API \(free tier\)")
     self.assertNotRegex(content, r"NewsApi")
+    self.assertNotRegex(content, r"\bnewsapi\b")
 
   def test_architecture_doc_links_to_source_note(self):
     content = ARCH_DOC.read_text(encoding="utf-8")
