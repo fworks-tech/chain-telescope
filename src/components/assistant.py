@@ -14,7 +14,7 @@ KPIS = [
   "Risk Index: 62 / 100 (Elevated)",
   "Active Alerts: 7 (3 triggered today)",
 ]
-IMPORTANT_SHORT_TOKENS = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
+ALLOWED_SHORT_TOKENS = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
 MAX_SMART_MATCHES = 5
 MAX_HISTORY_MESSAGES = 6
 
@@ -31,7 +31,7 @@ def _normalize_history(messages):
 
 def _smart_context_search(prompt, context):
   tokens = [t.strip(".,:;!?()[]{}\"'").lower() for t in prompt.split()]
-  tokens = [t for t in tokens if len(t) >= 3 or t in IMPORTANT_SHORT_TOKENS]
+  tokens = [t for t in tokens if t in ALLOWED_SHORT_TOKENS or len(t) >= 3]
   if not tokens:
     return []
 
@@ -44,8 +44,8 @@ def _smart_context_search(prompt, context):
   ]
 
   matches = []
-  for text in candidates:
-    lowered = text.lower()
+  lowered_candidates = [(text, text.lower()) for text in candidates]
+  for text, lowered in lowered_candidates:
     if any(token in lowered for token in tokens):
       matches.append(text)
   return matches[:MAX_SMART_MATCHES]
@@ -75,10 +75,12 @@ def _build_context(time_window, watchlist):
 def _fallback_response(context, reason):
   watchlist = ", ".join(context["watchlist"]) if context["watchlist"] else "no assets selected"
   top_names = ", ".join(row["Asset"] for row in context["trending_top3"])
+  lead_kpi = context["kpis"][0] if context["kpis"] else "KPI snapshot unavailable"
   return (
     "I can still summarize the current dashboard context:\n"
     f"- Watchlist: {watchlist}\n"
     f"- Time window: {context['time_window']}\n"
+    f"- KPI snapshot: {lead_kpi}\n"
     f"- Top trending assets: {top_names}\n"
     f"- Active alert examples: {context['alerts'][0]}; {context['alerts'][1]}\n\n"
     f"GPT provider is unavailable ({reason}). Set `OPENAI_API_KEY` in environment or Streamlit secrets to enable live responses."

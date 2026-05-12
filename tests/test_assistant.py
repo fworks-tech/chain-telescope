@@ -23,6 +23,7 @@ class AssistantUnitTests(unittest.TestCase):
     merged = " | ".join(matches)
     self.assertIn("BTC", merged)
     self.assertTrue(any("ETF" in item for item in matches))
+    self.assertFalse(any("Whale Activity" in item for item in matches))
 
 
 class AssistantIntegrationTests(unittest.TestCase):
@@ -66,6 +67,8 @@ class AssistantIntegrationTests(unittest.TestCase):
     answer = _query_model("summarize", context, history=[])
     self.assertIn("GPT provider is unavailable (missing credentials)", answer)
     self.assertIn("Watchlist: BTC", answer)
+    self.assertIn("KPI snapshot", answer)
+    self.assertIn("Top trending assets", answer)
 
 
 if __name__ == "__main__":
