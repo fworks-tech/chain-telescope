@@ -15,6 +15,13 @@ class DashboardQueryTests(unittest.TestCase):
         snapshot = load_dashboard_snapshot("30D", ["SOL", "ETH"])
         self.assertEqual(list(snapshot.trending["Asset"]), ["SOL", "ETH"])
 
+    def test_snapshot_applies_top_losers_trend_filter(self):
+        snapshot = load_dashboard_snapshot(
+            "30D", ["BTC", "ETH", "SOL", "XRP"], trend_filter="top_losers"
+        )
+        self.assertEqual(list(snapshot.trending["Asset"]), ["XRP"])
+        self.assertEqual(snapshot.trend_filter, "top_losers")
+
     def test_price_series_pairs_dates_and_prices_chronologically(self):
         days = 30
         dates, prices, _ = price_trend_series(asset="BTC", days=days, time_window="30D")

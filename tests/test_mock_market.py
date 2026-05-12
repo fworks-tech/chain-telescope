@@ -27,6 +27,14 @@ class MockMarketTests(unittest.TestCase):
         frame = trending_report_frame()
         self.assertEqual(list(frame["Asset"]), ["BTC", "ETH", "SOL", "BNB", "XRP"])
 
+    def test_trending_report_frame_top_gainers(self):
+        frame = trending_report_frame(["BTC", "ETH", "SOL", "XRP"], "top_gainers")
+        self.assertEqual(list(frame["Asset"]), ["SOL", "BTC", "ETH"])
+
+    def test_trending_report_frame_hot(self):
+        frame = trending_report_frame(["BTC", "ETH", "SOL", "XRP"], "hot")
+        self.assertEqual(list(frame["Asset"]), ["SOL"])
+
     def test_risk_graph_inputs_align(self):
         scores = risk_graph_scores()
         labels = risk_graph_labels()

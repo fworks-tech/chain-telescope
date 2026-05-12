@@ -21,16 +21,11 @@ TRENDING_ROWS = {
 }
 
 
-def price_trend_series(asset="BTC", days=30, time_window="30D"):
-    del time_window
-    base = ASSET_BASE_PRICES.get(asset, 1000.0)
-    dates = [datetime.today() - timedelta(days=(days - 1 - index)) for index in range(days)]
-    prices = [base + 1200 * math.sin(index / 3) + index * (base * 0.0007) for index in range(days)]
-    trend = pd.Series(prices).rolling(5, min_periods=1).mean()
-    return dates, prices, trend
+def _change_percent(change: str) -> float:
+    return float(change.replace("%", "").replace("+", ""))
 
 
-def trending_report_frame(watchlist=None):
+def trending_report_frame(watchlist=None, trend_filter="all"):
     assets = watchlist or list(TRENDING_ROWS)
     rows = []
     for asset in assets:
@@ -41,9 +36,30 @@ def trending_report_frame(watchlist=None):
                 "7D Change": change,
                 "Sentiment": sentiment,
                 "Risk": risk,
+                "_change": _change_percent(change),
             }
         )
-    return pd.DataFrame(rows)
+    frame = pd.DataFrame(rows)
+    if trend_filter == "top_gainers":
+        frame = frame[frame["_change"] > 0].sort_values("_change", ascending=False)
+    elif trend_filter == "top_losers":
+        frame = frame[frame["_change"] < 0].sort_values("_change", ascending=True)
+    elif trend_filter == "hot":
+        frame = frame[
+            (frame["Sentiment"] == "Very Bullish")
+            | (frame["_change"] >= 10)
+            | ((frame["Risk"] == "High") & (frame["_change"] > 0))
+        ].sort_values("_change", ascending=False)
+    return frame.drop(columns="_change").reset_index(drop=True)
+
+
+def price_trend_series(asset="BTC", days=30, time_window="30D"):
+    del time_window
+    base = ASSET_BASE_PRICES.get(asset, 1000.0)
+    dates = [datetime.today() - timedelta(days=(days - 1 - index)) for index in range(days)]
+    prices = [base + 1200 * math.sin(index / 3) + index * (base * 0.0007) for index in range(days)]
+    trend = pd.Series(prices).rolling(5, min_periods=1).mean()
+    return dates, prices, trend
 
 
 def risk_graph_scores():

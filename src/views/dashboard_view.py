@@ -9,9 +9,11 @@ from src.components.trending_report import render_trending_report
 from src.data.dashboard_query import load_dashboard_snapshot
 
 
-def render_dashboard_page(time_window: str, watchlist: list[str], market_source: str):
-    snapshot = load_dashboard_snapshot(time_window, watchlist, market_source)
-    render_dashboard_header(time_window, watchlist, market_source)
+def render_dashboard_page(
+    time_window: str, watchlist: list[str], market_source: str, trend_filter: str
+):
+    snapshot = load_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)
+    render_dashboard_header(time_window, watchlist, market_source, trend_filter)
     render_kpi_row(snapshot)
 
     st.markdown("### Market overview")
@@ -30,4 +32,4 @@ def render_dashboard_page(time_window: str, watchlist: list[str], market_source:
         render_news_panel(snapshot)
 
     st.markdown("### AI assistant")
-    render_assistant_panel(time_window, watchlist, market_source)
+    render_assistant_panel(time_window, watchlist, market_source, trend_filter)
