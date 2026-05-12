@@ -1,14 +1,8 @@
 import requests
+from src.data.assets import COINBASE_PRODUCTS
 from src.data.market.config import load_market_config
 
-PRODUCT_IDS = {
-    "BTC": "BTC-USD",
-    "ETH": "ETH-USD",
-    "SOL": "SOL-USD",
-    "BNB": "BNB-USD",
-    "XRP": "XRP-USD",
-}
-
+PRODUCT_IDS = COINBASE_PRODUCTS
 
 def fetch_coinbase_series(asset: str, days: int):
     config = load_market_config()

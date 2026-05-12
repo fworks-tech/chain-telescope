@@ -118,7 +118,7 @@ section[data-testid="stSidebar"] > div,
   background: #e8edff !important;
 }
 
-[data-testid="stSidebar"] div[data-baseweb="select"] > div,
+[data-testid="stSidebar"] div[data-baseweb="select"]:not(:has(span[data-baseweb="tag"])) > div,
 [data-testid="stSidebar"] div[data-baseweb="input"] > div,
 [data-testid="stSidebar"] input {
   background-color: var(--sidebar-control) !important;
@@ -126,10 +126,39 @@ section[data-testid="stSidebar"] > div,
   border-color: var(--sidebar-border) !important;
 }
 
+[data-testid="stSidebar"] div[data-baseweb="select"]:has(span[data-baseweb="tag"]) {
+  background-color: var(--sidebar-control) !important;
+  border-color: var(--sidebar-border) !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="select"]:has(span[data-baseweb="tag"]) > div,
+[data-testid="stSidebar"] div[data-baseweb="select"]:has(span[data-baseweb="tag"]) > div > div {
+  background-color: transparent !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.25rem !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="select"]:has(span[data-baseweb="tag"]) input {
+  background-color: transparent !important;
+  margin-left: 0.25rem !important;
+  min-width: 0.25rem !important;
+}
+
 [data-testid="stSidebar"] span[data-baseweb="tag"] {
   background-color: #e8edff !important;
   color: #1e3a8a !important;
   border: 1px solid #bfd0ff !important;
+  margin-left: 0.15rem !important;
+  overflow: visible !important;
+}
+
+[data-testid="stSidebar"] span[data-baseweb="tag"] > span[title] {
+  overflow: visible !important;
+  min-width: max-content !important;
+  max-width: none !important;
+  display: inline-block !important;
 }
 
 [data-testid="stSidebar"] svg {
