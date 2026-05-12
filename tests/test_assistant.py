@@ -27,7 +27,7 @@ class AssistantUnitTests(unittest.TestCase):
     self.assertIn("BTC", merged)
     self.assertTrue(any("ETF" in item for item in matches))
     self.assertTrue(any("alert" in item.lower() for item in matches))
-    self.assertFalse(any("Whale Activity" in item for item in matches))
+    self.assertNotIn("Whale Activity", merged)
 
   def test_build_context_uses_shared_snapshots(self):
     context = _build_context("24H", ["BTC"])
