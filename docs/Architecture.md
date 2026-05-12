@@ -80,8 +80,6 @@ CI and local setup install the full [`requirements.txt`](../requirements.txt) ev
 | [`app.py`](../app.py) | Production UI entrypoint |
 | [`requirements.txt`](../requirements.txt) | Python dependencies |
 | [`docs/`](../docs/) | Architecture and automation playbooks |
-| [`notebooks/`](../notebooks/) | Legacy Jupyter examples; not required to run the app |
-| [`archive/legacy/`](../archive/legacy/) | Archived demo assets |
 
 ## Automation
 
@@ -96,4 +94,4 @@ Near-term architecture aligned with [README.md](../README.md) product scope:
 - Back sidebar time window and watchlist with real query parameters
 - Implement multi-page or routed views when Alerts, News, Risk, and Newsletter become distinct experiences
 - Add scheduled workers for newsletter generation and alert evaluation, using packages already listed in `requirements.txt`
-- Keep legacy notebooks and archives out of the production run path; active code stays at the repo root and under `docs/`
+- Keep active code at the repo root and under `docs/`
