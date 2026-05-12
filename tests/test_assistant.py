@@ -20,6 +20,7 @@ class AssistantUnitTests(unittest.TestCase):
 
   def test_smart_context_search_returns_relevant_and_excludes_irrelevant_items(self):
     context = _build_context("30D", ["BTC", "ETH"])
+    context["alerts"].append("Whale Activity increased this week")
     matches = _smart_context_search("Any BTC alert and ETF news update?", context)
     merged = " | ".join(matches)
     self.assertIn("BTC below 63,500", " | ".join(context["alerts"]))

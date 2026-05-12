@@ -4,7 +4,7 @@ import requests
 import streamlit as st
 from streamlit.errors import StreamlitSecretNotFoundError
 
-from src.data.mock_market import alerts_snapshot, kpi_snapshot, news_snapshot, trending_report_frame
+from src.data.mock_market import alerts_snapshot, kpi_snapshot_lines, news_snapshot, trending_report_frame
 
 DOMAIN_KEYWORDS_ALLOWLIST = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
 MIN_TOKEN_LENGTH = 3
@@ -60,7 +60,7 @@ def _read_secret_or_env(name, default=None):
 
 def _build_context(time_window, watchlist):
   top_trending = trending_report_frame().head(3).to_dict("records")
-  kpis = [f"{item['label']}: {item['value']} ({item['delta']})" for item in kpi_snapshot()]
+  kpis = kpi_snapshot_lines()
   return {
     "time_window": time_window,
     "watchlist": watchlist,
