@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from src.components.assistant import _build_context, _normalize_history, _query_model, _smart_context_search
+from src.data.mock_market import alerts_snapshot, news_snapshot
 
 
 class AssistantUnitTests(unittest.TestCase):
@@ -26,6 +27,11 @@ class AssistantUnitTests(unittest.TestCase):
     self.assertTrue(any("ETF" in item for item in matches))
     self.assertTrue(any("alert" in item.lower() for item in matches))
     self.assertFalse(any("Whale Activity" in item for item in matches))
+
+  def test_build_context_uses_shared_snapshots(self):
+    context = _build_context("24H", ["BTC"])
+    self.assertEqual(context["alerts"], alerts_snapshot())
+    self.assertEqual(context["news"], news_snapshot())
 
 
 class AssistantIntegrationTests(unittest.TestCase):

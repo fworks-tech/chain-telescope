@@ -106,8 +106,8 @@ If credentials are missing, rate-limited, or provider calls fail, the assistant 
 - Suggested next issues: chat persistence/history storage, retrieval/tool use against ingested datasets, and source citation rendering
 
 ### Current limitations
-- Demo and mock data in `app.py`, not live market feeds
-- Sidebar navigation labels are not separate routed pages yet
+- Demo and mock data live under `src/data/` and feed `src/components/*`, not live market feeds
+- Sidebar currently exposes time window/watchlist controls only; routed multipage navigation is tracked separately in #12
 - Several packages in `requirements.txt` are reserved for future pipelines and are not used by `app.py` today
 
 ## CI

@@ -32,3 +32,20 @@ def risk_graph_labels():
 
 def risk_graph_colors():
   return ["#f79009", "#12b76a", "#f04438", "#3b5bff"]
+
+
+def kpi_snapshot():
+  return [
+    {"label": "Market Cap Tracked", "value": "$2.14T", "delta": "+2.8%", "color": "#12b76a"},
+    {"label": "24H Volume", "value": "$86.3B", "delta": "+5.1%", "color": "#12b76a"},
+    {"label": "Risk Index", "value": "62 / 100", "delta": "Elevated", "color": "#f79009"},
+    {"label": "Active Alerts", "value": "7", "delta": "3 triggered today", "color": "#3b5bff"},
+  ]
+
+
+def alerts_snapshot():
+  return ["BTC below 63,500", "ETH RSI crossed 70", "SOL breakout"]
+
+
+def news_snapshot():
+  return ["ETF flows rebound", "Layer-1 activity rotates to SOL", "Exchange reserves decline"]

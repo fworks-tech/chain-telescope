@@ -4,16 +4,7 @@ import requests
 import streamlit as st
 from streamlit.errors import StreamlitSecretNotFoundError
 
-from src.data.mock_market import trending_report_frame
-
-ALERTS = ["BTC below 63,500", "ETH RSI crossed 70", "SOL breakout"]
-NEWS = ["ETF flows rebound", "Layer-1 activity rotates to SOL", "Exchange reserves decline"]
-KPIS = [
-  "Market Cap Tracked: $2.14T (+2.8%)",
-  "24H Volume: $86.3B (+5.1%)",
-  "Risk Index: 62 / 100 (Elevated)",
-  "Active Alerts: 7 (3 triggered today)",
-]
+from src.data.mock_market import alerts_snapshot, kpi_snapshot, news_snapshot, trending_report_frame
 DOMAIN_KEYWORDS_ALLOWLIST = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
 MIN_TOKEN_LENGTH = 3
 MAX_SMART_MATCHES = 5
@@ -65,12 +56,13 @@ def _read_secret_or_env(name, default=None):
 
 def _build_context(time_window, watchlist):
   top_trending = trending_report_frame().head(3).to_dict("records")
+  kpis = [f"{item['label']}: {item['value']} ({item['delta']})" for item in kpi_snapshot()]
   return {
     "time_window": time_window,
     "watchlist": watchlist,
-    "kpis": KPIS,
-    "alerts": ALERTS,
-    "news": NEWS,
+    "kpis": kpis,
+    "alerts": alerts_snapshot(),
+    "news": news_snapshot(),
     "trending_top3": top_trending,
   }
 
@@ -171,12 +163,10 @@ def render_assistant_panel(time_window, watchlist):
 
   prompt = st.chat_input("Ask about the current dashboard context")
   if prompt:
+    history = st.session_state.assistant_messages.copy()
     st.session_state.assistant_messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-      st.markdown(prompt)
-    answer = _query_model(prompt, context, history=st.session_state.assistant_messages[:-1])
-    with st.chat_message("assistant"):
-      st.markdown(answer)
+    answer = _query_model(prompt, context, history=history)
     st.session_state.assistant_messages.append({"role": "assistant", "content": answer})
+    st.rerun()
 
   st.markdown('</div>', unsafe_allow_html=True)

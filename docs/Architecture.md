@@ -52,7 +52,7 @@ Import flow: `app.py` imports component renderers and `inject_global_styles()`. 
 
 ### Sidebar
 
-The sidebar shows branding, a navigation radio group, a time-window select box, and a watchlist multiselect. The navigation labels (Dashboard, Alerts, News, Risk, Newsletter) are presentational only: selecting a different item does not route to a separate page or change the main layout.
+The sidebar shows branding, a time-window select box, and a watchlist multiselect. It currently passes only `time_window` and `watchlist` into dashboard context; multi-page routing remains a follow-up under issue #12.
 
 ### Main dashboard
 
@@ -74,7 +74,7 @@ Styling uses injected CSS for cards and panels; layout uses Streamlit columns.
 | Price trend | Mock series from `src/data/mock_market.py` | Live or cached OHLCV per watchlist asset |
 | Trending report | Static pandas `DataFrame` in mock data module | Computed rankings and sentiment from pipeline output |
 | Risk graph | Fixed bar scores in mock data module | Derived risk model inputs and history |
-| Alerts and news | Static HTML copy in feed panels | Rules engine plus news aggregation |
+| Alerts and news | Snapshot helpers in `src/data/mock_market.py` rendered by feed panels | Rules engine plus news aggregation |
 | Newsletter | Client-side validation and success message only | Persistence, scheduling, and outbound delivery |
 | Sidebar filters | Widget state only; no effect on data | Drive queries and chart windows |
 

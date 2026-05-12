@@ -14,7 +14,7 @@ from src.styles import inject_global_styles
 st.set_page_config(page_title="Crypto Market Analyzer", page_icon="📈", layout="wide")
 
 inject_global_styles()
-_, time_window, watchlist = render_sidebar()
+time_window, watchlist = render_sidebar()
 render_dashboard_header()
 render_kpi_row()
 
