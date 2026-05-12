@@ -66,6 +66,15 @@ Confirm the app behaves as expected before opening a pull request:
 - [ ] Dashboard, charts, and tables render in the browser
 - [ ] Newsletter subscribe shows success for a valid email and an error for invalid input
 - [ ] `python -m py_compile app.py` passes (same compile check as CI)
+- [ ] `python -m unittest tests/test_source_inventory_note.py` passes for the M4 source inventory note contract
+
+### M4 source inventory note
+
+The planning note in [`docs/source-inventory-m4.md`](docs/source-inventory-m4.md) is guarded by local doc-contract tests:
+
+```bash
+python -m unittest tests/test_source_inventory_note.py
+```
 
 ## AI Assistant (MVP)
 
@@ -112,7 +121,7 @@ If credentials are missing, rate-limited, or provider calls fail, the assistant 
 
 ## CI
 
-On push and pull request to `main`, `master`, and `feat/**`, GitHub Actions installs `requirements.txt` and compiles `app.py`. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml). CI does not start Streamlit or run browser tests.
+On push and pull request to `main`, `master`, and `feat/**`, GitHub Actions installs `requirements.txt`, compiles `app.py`, and runs `python -m unittest discover -s tests -p 'test_*.py'`. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml). CI does not start Streamlit or run browser tests.
 
 ## Project Layout
 - `app.py` — Streamlit UI entrypoint
