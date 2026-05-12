@@ -6,7 +6,7 @@ This note inventories practical, local/CI-friendly data source options for M4 in
 
 | Source | Access | Cost / License | Freshness & Quotas | Repo fit |
 |---|---|---|---|---|
-| Binance public market endpoints | REST + websocket (`/api/v3/klines`, depth, ticker, futures APIs) | Free public endpoints; exchange ToS applies | Near real-time; weight-based limits; occasional regional restrictions | Strong for spot+derivatives+order book with no key for baseline |
+| Binance public market endpoints | REST (`/api/v3/klines`, depth, ticker, futures APIs); WebSocket streams for live market updates | Free public endpoints; exchange ToS applies | Near real-time; weight-based limits; occasional regional restrictions | Strong for spot+derivatives+order book with no key for baseline |
 | CoinGecko API (free/demo + paid) | REST (markets, OHLC, categories) | Free tier + paid plans; attribution required | Good for dashboard cadence; key and per-minute limits | Strong aggregator fallback across many assets/exchanges |
 | CCXT (library over many exchanges) | Python SDK wrapping exchange APIs | OSS library; underlying exchange ToS | Depends on exchange and configured rate-limit handling | Good abstraction layer, but adds integration complexity |
 | Kaiko / CoinAPI / CryptoCompare | Vendor APIs | Paid/commercial licenses | High quality historical + SLAs | Defer until paid vendor need is explicit |
