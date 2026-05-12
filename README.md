@@ -67,9 +67,35 @@ Confirm the app behaves as expected before opening a pull request:
 - [ ] Newsletter subscribe shows success for a valid email and an error for invalid input
 - [ ] `python -m py_compile app.py` passes (same compile check as CI)
 
+## AI Assistant (MVP)
+
+The dashboard includes an **AI Assistant** panel for short, context-grounded Q&A about the current watchlist, time window, KPI snapshot, alerts, news snapshot, and trending highlights.
+
+### Provider configuration
+
+Use environment variables or Streamlit secrets (`.streamlit/secrets.toml`); do not commit keys.
+
+- `OPENAI_API_KEY` (required for live model calls)
+- `OPENAI_BASE_URL` (optional, default `https://api.openai.com/v1`)
+- `OPENAI_MODEL` (optional, default `gpt-4o-mini`)
+- `OPENAI_TIMEOUT_SECONDS` (optional, default `15`)
+
+If credentials are missing, rate-limited, or provider calls fail, the assistant returns a local fallback summary instead of crashing.
+
+### Product boundaries
+
+- Assistant responses are informational, not financial advice
+- No autonomous trading or exchange execution
+- If context is missing, the assistant says so instead of inventing claims
+
+### Follow-up mapping
+
+- Richer grounding from data-backed panels and ingestion: #14–#18
+- Source discovery follow-through: #22 and [`docs/source-inventory-m4.md`](docs/source-inventory-m4.md)
+
 ### Current limitations
-- Demo and mock data in `app.py`, not live market feeds
-- Sidebar navigation labels are not separate routed pages yet
+- Demo and mock data under `src/`, not live market feeds
+- Sidebar navigation labels are not separate routed pages yet (#12)
 - Several packages in `requirements.txt` are reserved for future pipelines and are not used by `app.py` today
 
 ## CI

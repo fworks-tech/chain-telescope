@@ -41,6 +41,7 @@ On each run, `app.py` configures the page, applies global styles, renders the si
 | [`src/components/trending_report.py`](../src/components/trending_report.py) | Trending report table |
 | [`src/components/risk_graph.py`](../src/components/risk_graph.py) | Risk bar chart panel |
 | [`src/components/feed_panels.py`](../src/components/feed_panels.py) | Alerts and news snapshot panels |
+| [`src/components/assistant.py`](../src/components/assistant.py) | In-app GPT assistant with safe fallbacks |
 | [`src/components/newsletter.py`](../src/components/newsletter.py) | Newsletter subscription form |
 | [`src/data/mock_market.py`](../src/data/mock_market.py) | Mock market series, table, and risk inputs |
 | [`src/validation/email.py`](../src/validation/email.py) | Newsletter email validation |
@@ -60,7 +61,7 @@ The main area is a single dashboard view:
 - Header with greeting and a UTC timestamp from `datetime.utcnow()`
 - Four KPI cards (market cap, volume, risk index, active alerts) rendered as HTML snippets
 - Left column: price trend chart (synthetic BTC series plus rolling mean) and trending report table
-- Right column: horizontal risk bar chart, static alerts list, and static news snapshot
+- Right column: horizontal risk bar chart, static alerts list, static news snapshot, and AI assistant chat panel
 - Footer panel: newsletter email, frequency, format, and subscribe button with basic email validation
 
 Styling uses injected CSS for cards and panels; layout uses Streamlit columns.
@@ -74,10 +75,20 @@ Styling uses injected CSS for cards and panels; layout uses Streamlit columns.
 | Trending report | Static pandas `DataFrame` in mock data module | Computed rankings and sentiment from pipeline output |
 | Risk graph | Fixed bar scores in mock data module | Derived risk model inputs and history |
 | Alerts and news | Static HTML copy in feed panels | Rules engine plus news aggregation |
+| Assistant | Optional OpenAI-compatible chat over dashboard snapshot context | Tool use and retrieval over ingested datasets |
 | Newsletter | Client-side validation and success message only | Persistence, scheduling, and outbound delivery |
 | Sidebar filters | Widget state only; no effect on data | Drive queries and chart windows |
 
-No environment variables or `.env` files are required to run the current UI. [`python-dotenv`](../requirements.txt) is listed for future configuration of API keys and service endpoints.
+Assistant provider settings are optional and read from environment variables or Streamlit secrets:
+
+- `OPENAI_API_KEY` (required for live model calls)
+- `OPENAI_BASE_URL` (default `https://api.openai.com/v1`)
+- `OPENAI_MODEL` (default `gpt-4o-mini`)
+- `OPENAI_TIMEOUT_SECONDS` (default `15`)
+
+When these values are absent or the provider fails, the assistant degrades to local context summaries and does not block the dashboard.
+
+M4 source discovery for market, feed, investor, and developer inputs is documented in [`source-inventory-m4.md`](source-inventory-m4.md).
 
 ## Dependencies
 
@@ -86,7 +97,7 @@ No environment variables or `.env` files are required to run the current UI. [`p
 | `streamlit` | UI shell, widgets, layout | Same |
 | `pandas` | Trending table and rolling mean on mock prices | Pipeline transforms and report tables |
 | `plotly` | Price trend and risk charts | Same |
-| `requests` | Not used in `app.py` | HTTP market and news sources |
+| `requests` | OpenAI-compatible assistant HTTP calls | HTTP market and news sources |
 | `feedparser` | Not used in `app.py` | RSS and feed ingestion |
 | `schedule` | Not used in `app.py` | Periodic jobs (reports, newsletter) |
 | `pydantic` | Not used in `app.py` | Validated config and API models |
