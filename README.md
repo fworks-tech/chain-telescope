@@ -66,6 +66,8 @@ Confirm the app behaves as expected before opening a pull request:
 - [ ] Dashboard, charts, and tables render in the browser
 - [ ] Newsletter subscribe shows success for a valid email and an error for invalid input
 - [ ] `python -m py_compile app.py` passes (same compile check as CI)
+- [ ] `python -m unittest discover -s tests -p 'test_*.py'` passes
+- [ ] `ruff check app.py src tests` and `ruff format --check app.py src tests` pass when Ruff is installed locally
 - [ ] `python -m unittest tests/test_source_inventory_note.py` passes for the M4 source inventory note contract
 
 ### M4 source inventory note
@@ -125,7 +127,29 @@ Optional environment variables and Streamlit secrets are documented in [`docs/co
 
 ## CI
 
-On push and pull request to `main`, `master`, and `feat/**`, GitHub Actions installs `requirements.txt`, compiles `app.py` and `src/**/*.py`, imports the Streamlit entrypoint, and runs `python -m unittest discover -s tests -p 'test_*.py'`. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml). CI does not start Streamlit or run browser tests.
+On push and pull request to `main`, `master`, and `feat/**`, GitHub Actions runs layered quality gates in [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
+
+| Job | What it enforces |
+|-----|------------------|
+| `test` | `python -m unittest discover -s tests -p 'test_*.py'` (validation, mock data helpers, assistant wiring, doc contracts, and a Streamlit `AppTest` smoke run) |
+| `build` | `py_compile` on `app.py`, every `src/**/*.py` module, and routed `pages/**/*.py` entrypoints, plus a Streamlit entrypoint import smoke check |
+| `lint` | Ruff lint and format checks on `app.py`, `src/`, and `tests/` (baseline in [`pyproject.toml`](pyproject.toml)) |
+| `maintainability` | Advisory Ruff complexity and hygiene rules (`C901`, `ERA001`, `ARG001`); reports findings without blocking merges on day one |
+
+Local equivalents after installing dependencies and Ruff (`python -m pip install ruff`):
+
+```bash
+python -m unittest discover -s tests -p 'test_*.py' -v
+python - <<'PY'
+import pathlib, py_compile
+for path in [pathlib.Path("app.py"), *sorted(pathlib.Path("src").rglob("*.py")), *sorted(pathlib.Path("pages").rglob("*.py"))]:
+    py_compile.compile(str(path), doraise=True)
+PY
+ruff check app.py src tests
+ruff format --check app.py src tests
+```
+
+CI does not start a browser or run Playwright screenshot comparisons yet. See the **Visual regression** note in [`docs/Architecture.md`](docs/Architecture.md) for the deferred pilot path.
 
 ## Project Layout
 - `app.py` — Streamlit UI entrypoint and navigation shell

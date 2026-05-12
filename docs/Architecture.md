@@ -136,7 +136,12 @@ CI and local setup install the full [`requirements.txt`](../requirements.txt).
 
 ## Automation
 
-- **CI** ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)): on push and pull request to `main`, `master`, and `feat/**`, installs dependencies on Python 3.11, compiles `app.py` and `src/**/*.py`, imports the Streamlit entrypoint, and runs unit tests. It does not start Streamlit or run browser tests.
+- **CI** ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)): on push and pull request to `main`, `master`, and `feat/**`, installs dependencies on Python 3.11 and runs four jobs:
+  - `test` — `unittest` discovery for validation helpers, mock data adapters, assistant wiring, doc contracts, and a Streamlit `AppTest` smoke run of `app.py`
+  - `build` — `py_compile` on `app.py`, all `src/**/*.py` modules, routed `pages/**/*.py` entrypoints, and a Streamlit entrypoint import smoke check
+  - `lint` — Ruff lint and format checks on `app.py`, `src/`, and `tests/` using [`pyproject.toml`](../pyproject.toml)
+  - `maintainability` — advisory Ruff complexity and hygiene rules (`C901`, `ERA001`, `ARG001`) that annotate pull requests without blocking merges while legacy debt is triaged
+- **Visual regression**: deferred until multi-page navigation stabilizes (#12). The planned pilot is Playwright snapshot checks against `streamlit run app.py` on localhost for the dashboard and one alternate route, with dynamic KPI and timestamp regions masked. Baseline updates will be documented alongside that pilot; CI does not run browser screenshots today.
 - **Dev Container** ([`.devcontainer/devcontainer.json`](../.devcontainer/devcontainer.json)): installs dependencies via `updateContentCommand` on create and update. Streamlit is not started automatically; run `streamlit run app.py` from the repository root after the container is ready.
 
 Manual and automated validation steps are listed in [validation-and-manual-qa.md](validation-and-manual-qa.md).
