@@ -88,7 +88,7 @@ Assistant provider settings are optional and read from environment variables or 
 
 When these values are absent or the provider fails, the assistant degrades to local context summaries and does not block the dashboard.
 
-M4 source discovery for market, feed, investor, and developer inputs is documented in [`source-inventory-m4.md`](source-inventory-m4.md).
+M4 source discovery for market, feed, investor, and developer inputs is documented in [`docs/source-inventory-m4.md`](source-inventory-m4.md).
 
 ## Dependencies
 
