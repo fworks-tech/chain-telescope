@@ -28,10 +28,14 @@ class SourceInventoryNoteTests(unittest.TestCase):
     content = SOURCE_NOTE.read_text(encoding="utf-8")
     self.assertIn("NewsAPI (free tier)", content)
     self.assertNotIn("News API aggregator", content)
+    self.assertNotIn("News API (free tier)", content)
+    self.assertNotIn("NewsApi", content)
+    self.assertNotIn("newsapi", content)
 
   def test_architecture_doc_links_to_source_note(self):
     content = ARCH_DOC.read_text(encoding="utf-8")
     self.assertIn("[`docs/source-inventory-m4.md`](source-inventory-m4.md)", content)
+    self.assertTrue(SOURCE_NOTE.exists())
 
 
 if __name__ == "__main__":
