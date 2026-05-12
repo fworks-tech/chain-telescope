@@ -4,9 +4,9 @@ This document describes how the Crypto Market Analyzer is structured today and h
 
 ## Overview
 
-The current application is a single-file Streamlit client in [`app.py`](../app.py). The UI renders in the browser while Streamlit runs a Python process that rebuilds the page on interaction. There is no separate backend service, database, or job runner in the repository yet.
+The application is a Streamlit client with a thin entrypoint in [`app.py`](../app.py) and UI modules under [`src/`](../src/). The browser talks to a Streamlit server that reruns the entry script on interaction. There is no separate backend service, database, or job runner in the repository yet.
 
-The product direction in [README.md](../README.md) calls for Python data pipelines, alerts, and newsletter automation. Those capabilities are represented in [`requirements.txt`](../requirements.txt) as forward-looking dependencies but are not wired into `app.py` today.
+The product direction in [README.md](../README.md) calls for Python data pipelines, alerts, and newsletter automation. Those capabilities are represented in [`requirements.txt`](../requirements.txt) as forward-looking dependencies but are not wired into the UI beyond mock data today.
 
 ## Runtime flow
 
@@ -15,16 +15,37 @@ flowchart LR
   Browser[Browser]
   StreamlitServer[Streamlit server]
   AppPy[app.py]
+  SrcModules[src modules]
   PlotlyPandas[Plotly and pandas]
 
   Browser -->|HTTP| StreamlitServer
   StreamlitServer --> AppPy
-  AppPy --> PlotlyPandas
+  AppPy --> SrcModules
+  SrcModules --> PlotlyPandas
   PlotlyPandas --> StreamlitServer
   StreamlitServer --> Browser
 ```
 
-On each run, `app.py` applies page configuration and custom CSS, draws sidebar controls, and renders dashboard panels. Charts are built with Plotly and passed to `st.plotly_chart`. Tables use pandas `DataFrame` objects and `st.dataframe`. User input for the newsletter block is handled inline with Streamlit widgets and conditional success or error messages.
+On each run, `app.py` configures the page, applies global styles, renders the sidebar, and composes dashboard panels through `render_*` functions in `src/components/`. Mock series and tables come from `src/data/mock_market.py`. Newsletter validation uses `src/validation/email.py`.
+
+## Module map
+
+| Path | Role |
+|------|------|
+| [`app.py`](../app.py) | Streamlit entrypoint and layout orchestration |
+| [`src/styles.py`](../src/styles.py) | Global CSS injection |
+| [`src/components/sidebar.py`](../src/components/sidebar.py) | Sidebar branding and controls |
+| [`src/components/dashboard_header.py`](../src/components/dashboard_header.py) | Greeting and UTC snapshot caption |
+| [`src/components/kpi_row.py`](../src/components/kpi_row.py) | KPI card row |
+| [`src/components/price_trend.py`](../src/components/price_trend.py) | Price trend chart panel |
+| [`src/components/trending_report.py`](../src/components/trending_report.py) | Trending report table |
+| [`src/components/risk_graph.py`](../src/components/risk_graph.py) | Risk bar chart panel |
+| [`src/components/feed_panels.py`](../src/components/feed_panels.py) | Alerts and news snapshot panels |
+| [`src/components/newsletter.py`](../src/components/newsletter.py) | Newsletter subscription form |
+| [`src/data/mock_market.py`](../src/data/mock_market.py) | Mock market series, table, and risk inputs |
+| [`src/validation/email.py`](../src/validation/email.py) | Newsletter email validation |
+
+Import flow: `app.py` imports component renderers and `inject_global_styles()`. Components import mock data or validation helpers as needed. There is no shared state module yet.
 
 ## UI composition
 
@@ -48,11 +69,11 @@ Styling uses injected CSS for cards and panels; layout uses Streamlit columns.
 
 | Area | Today | Planned |
 |------|-------|---------|
-| Market KPIs | Hard-coded HTML values in `app.py` | Ingestion from market APIs or aggregated feeds |
-| Price trend | Locally generated sine-based series over 30 days | Live or cached OHLCV per watchlist asset |
-| Trending report | Static pandas `DataFrame` | Computed rankings and sentiment from pipeline output |
-| Risk graph | Fixed bar scores | Derived risk model inputs and history |
-| Alerts and news | Static HTML copy | Rules engine plus news aggregation |
+| Market KPIs | Hard-coded HTML values in KPI component | Ingestion from market APIs or aggregated feeds |
+| Price trend | Mock series from `src/data/mock_market.py` | Live or cached OHLCV per watchlist asset |
+| Trending report | Static pandas `DataFrame` in mock data module | Computed rankings and sentiment from pipeline output |
+| Risk graph | Fixed bar scores in mock data module | Derived risk model inputs and history |
+| Alerts and news | Static HTML copy in feed panels | Rules engine plus news aggregation |
 | Newsletter | Client-side validation and success message only | Persistence, scheduling, and outbound delivery |
 | Sidebar filters | Widget state only; no effect on data | Drive queries and chart windows |
 
@@ -78,6 +99,7 @@ CI and local setup install the full [`requirements.txt`](../requirements.txt) ev
 | Path | Role |
 |------|------|
 | [`app.py`](../app.py) | Production UI entrypoint |
+| [`src/`](../src/) | Streamlit UI modules, mock data, and validation helpers |
 | [`requirements.txt`](../requirements.txt) | Python dependencies |
 | [`docs/`](../docs/) | Architecture and automation playbooks |
 
@@ -90,8 +112,8 @@ CI and local setup install the full [`requirements.txt`](../requirements.txt) ev
 
 Near-term architecture aligned with [README.md](../README.md) product scope:
 
-- Extract data access and transforms from `app.py` into importable modules as pipelines mature
 - Back sidebar time window and watchlist with real query parameters
 - Implement multi-page or routed views when Alerts, News, Risk, and Newsletter become distinct experiences
+- Replace mock data providers with ingestion modules as pipelines mature
 - Add scheduled workers for newsletter generation and alert evaluation, using packages already listed in `requirements.txt`
-- Keep active code at the repo root and under `docs/`
+- Keep active code at the repo root, under `src/`, and under `docs/`
