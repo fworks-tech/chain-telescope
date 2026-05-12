@@ -29,7 +29,7 @@ class SourceInventoryNoteTests(unittest.TestCase):
     self.assertIn("NewsAPI (free tier)", content)
     self.assertNotIn("News API aggregator", content)
 
-  def test_architecture_links_to_source_note(self):
+  def test_architecture_doc_links_to_source_note(self):
     content = ARCH_DOC.read_text(encoding="utf-8")
     self.assertIn("[`docs/source-inventory-m4.md`](source-inventory-m4.md)", content)
 
