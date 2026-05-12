@@ -26,6 +26,46 @@ html, body, [data-testid="stAppViewContainer"] {
   color: var(--text);
 }
 
+[data-testid="stMainBlockContainer"] {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+[data-testid="stMainBlockContainer"] h2,
+[data-testid="stMainBlockContainer"] h3 {
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+[data-testid="stMainBlockContainer"] [data-testid="stCaptionContainer"] p {
+  color: var(--muted);
+}
+
+[data-testid="stVerticalBlockBorderWrapper"] {
+  background: var(--panel);
+  border-color: var(--border) !important;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.04);
+}
+
+.kpi-value {
+  font-size: 1.65rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.kpi-delta {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.feed-item {
+  margin: 0.35rem 0;
+  color: var(--text);
+  line-height: 1.45;
+}
+
 section[data-testid="stSidebar"],
 [data-testid="stSidebar"] {
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;

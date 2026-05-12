@@ -11,15 +11,23 @@ from src.data.dashboard_query import load_dashboard_snapshot
 
 def render_dashboard_page(time_window: str, watchlist: list[str]):
     snapshot = load_dashboard_snapshot(time_window, watchlist)
-    render_dashboard_header()
+    render_dashboard_header(time_window, watchlist)
     render_kpi_row(snapshot)
 
-    left, right = st.columns([2.2, 1], gap="large")
-    with left:
+    st.markdown("### Market overview")
+    chart_col, risk_col = st.columns([2.1, 1], gap="large")
+    with chart_col:
         render_price_trend(snapshot)
-        render_trending_report(snapshot)
-    with right:
+    with risk_col:
         render_risk_graph(snapshot)
+
+    st.markdown("### Watchlist and signals")
+    table_col, signal_col = st.columns([1.45, 1], gap="large")
+    with table_col:
+        render_trending_report(snapshot)
+    with signal_col:
         render_alerts_panel(snapshot)
         render_news_panel(snapshot)
-        render_assistant_panel(time_window, watchlist)
+
+    st.markdown("### AI assistant")
+    render_assistant_panel(time_window, watchlist)

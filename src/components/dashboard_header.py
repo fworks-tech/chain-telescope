@@ -3,6 +3,10 @@ from datetime import datetime
 import streamlit as st
 
 
-def render_dashboard_header():
-    st.markdown("## Good Morning, Richard")
-    st.caption(f"Live snapshot • {datetime.utcnow():%Y-%m-%d %H:%M} UTC")
+def render_dashboard_header(time_window: str, watchlist: list[str]):
+    watchlist_label = ", ".join(watchlist) if watchlist else "No assets selected"
+    st.markdown("## Market dashboard")
+    st.caption(
+        f"Tracking {watchlist_label} over {time_window}. "
+        f"Updated {datetime.utcnow():%Y-%m-%d %H:%M} UTC."
+    )
