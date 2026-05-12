@@ -1,10 +1,10 @@
 import streamlit as st
 
-from src.data.mock_market import trending_report_frame
+from src.data.dashboard_query import DashboardSnapshot
 
 
-def render_trending_report():
+def render_trending_report(snapshot: DashboardSnapshot):
   st.markdown('<div class="panel">', unsafe_allow_html=True)
   st.subheader("Trending Report")
-  st.dataframe(trending_report_frame(), hide_index=True, use_container_width=True)
+  st.dataframe(snapshot.trending, hide_index=True, width="stretch")
   st.markdown('</div>', unsafe_allow_html=True)
