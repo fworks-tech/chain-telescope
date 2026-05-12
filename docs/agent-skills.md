@@ -7,7 +7,7 @@ Keep this repository reliable, readable, and automatable.
 
 ### 1. Cleanup Guard
 - Detect obsolete demo assets in active folders
-- Ensure legacy artifacts stay under archive
+- Remove template leftovers that are not part of the Streamlit app
 
 ### 2. Validation Runner
 - Execute lightweight syntax and smoke checks

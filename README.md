@@ -80,8 +80,6 @@ On push and pull request to `main`, `master`, and `feat/**`, GitHub Actions inst
 - `app.py` — Streamlit UI entrypoint
 - `requirements.txt` — Python dependencies
 - `docs/` — architecture and automation playbooks
-- `notebooks/` — legacy Jupyter examples (not required to run the app)
-- `archive/legacy/` — archived demo assets
 
 ## Architecture
 
