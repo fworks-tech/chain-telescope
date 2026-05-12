@@ -1,5 +1,6 @@
 import streamlit as st
 
+from src.components.assistant import render_assistant_panel
 from src.components.dashboard_header import render_dashboard_header
 from src.components.feed_panels import render_alerts_panel, render_news_panel
 from src.components.kpi_row import render_kpi_row
@@ -13,7 +14,7 @@ from src.styles import inject_global_styles
 st.set_page_config(page_title="Crypto Market Analyzer", page_icon="📈", layout="wide")
 
 inject_global_styles()
-render_sidebar()
+_, time_window, watchlist = render_sidebar()
 render_dashboard_header()
 render_kpi_row()
 
@@ -27,5 +28,6 @@ with right:
   render_risk_graph()
   render_alerts_panel()
   render_news_panel()
+  render_assistant_panel(time_window, watchlist)
 
 render_newsletter()
