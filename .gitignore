@@ -1,3 +1,14 @@
 notebooks/data
 notebooks/cifar_net.pth
 .ipynb_checkpoints/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+.streamlit/secrets.toml
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
