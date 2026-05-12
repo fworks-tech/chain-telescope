@@ -21,7 +21,7 @@ This note inventories practical, local/CI-friendly data source options for M4 in
 | CoinDesk, The Block, Cointelegraph feeds | RSS/Atom via `feedparser` | Usually free read access; publisher terms apply | Minutes; low ingestion cost; occasional feed changes | Strong for direct ingestion with parser normalization |
 | Chain/project blogs (Ethereum, Solana, L2s) | RSS/Atom + changelog pages | Free public content | Event-driven release cadence | Strong for protocol-specific context and release correlations |
 | Macro feeds (Fed, ECB, IMF press releases) | RSS/Atom/web feeds | Free public sources | Lower frequency, high macro relevance | Good background context for market move explanations |
-| NewsAPI / GDELT / aggregators | API | Free limited + paid tiers | API-key quotas and pagination constraints | Useful fallback when RSS coverage gaps appear |
+| NewsAPI / GDELT APIs | API | Free limited + paid tiers | API-key quotas and pagination constraints | Useful fallback when RSS coverage gaps appear |
 
 **Recommended default path:** RSS/Atom first (crypto outlets + official protocol blogs + macro outlets) normalized through `feedparser` into one schema (`id`, `source`, `published_at`, `title`, `url`, `tags`).  
 **Explicit defer/alternative:** Defer paid aggregation APIs unless RSS reliability/coverage is insufficient.
@@ -63,7 +63,7 @@ This note inventories practical, local/CI-friendly data source options for M4 in
 | Panel / feature | Default | Fallback | Notes |
 |---|---|---|---|
 | KPIs + trend chart | Binance public endpoints | CoinGecko market endpoints | Works locally/CI without paid-only dependency |
-| Alerts/news feed | RSS/Atom via `feedparser` (crypto + official blogs + macro) | News API aggregator (free tier) | Normalize + dedupe by URL/title hash |
+| Alerts/news feed | RSS/Atom via `feedparser` (crypto + official blogs + macro) | NewsAPI (free tier) | Normalize + dedupe by URL/title hash |
 | Risk/context panel | ETF flows + EDGAR summaries + official status pages | Curated on-chain watchlist snapshots | Weight alerts by source confidence |
 | Newsletter source set | Same normalized feed store + top market movers | Cached last-good bundle | Ensure deterministic output when APIs fail |
 
@@ -71,11 +71,11 @@ This note inventories practical, local/CI-friendly data source options for M4 in
 
 | Issue | Proposed source decision linkage |
 |---|---|
-| #14 | Use market provider adapter with Binance default and CoinGecko fallback for dashboard KPIs/trends |
-| #15 | Implement feed normalization pipeline around RSS/Atom (`feedparser` schema + dedupe + timestamps) |
-| #16 | Build alert rules over normalized market + high-confidence investor/developer signals; include confidence metadata |
-| #17 | Use normalized feeds + market deltas for newsletter generation inputs and cached fallback mode |
-| #18 | Add secrets/config contract (`.env`/CI vars), rate-limit policy, and provider health/fallback monitoring |
+| #14 | Wire sidebar filters to dashboard data queries so selected watchlist/time windows apply consistently to market and feed panels |
+| #15 | Implement market ingestion adapter with Binance default + CoinGecko fallback and graceful degradation when provider config is unset |
+| #16 | Implement news/feed ingestion normalization around RSS/Atom (`feedparser` schema + dedupe + timestamps) with NewsAPI fallback |
+| #17 | Build alert rules over normalized market + high-confidence investor/developer signals, including per-signal confidence metadata |
+| #18 | Implement newsletter persistence/delivery using normalized feed + market deltas, with cached fallback content and environment-based secrets |
 | Proposed new issue | “Provider registry + signal confidence taxonomy” to standardize source metadata and alert scoring |
 
 ## Risks and prerequisites

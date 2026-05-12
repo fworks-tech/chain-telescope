@@ -8,6 +8,8 @@ The application is a Streamlit client with a thin entrypoint in [`app.py`](../ap
 
 The product direction in [README.md](../README.md) calls for Python data pipelines, alerts, and newsletter automation. Those capabilities are represented in [`requirements.txt`](../requirements.txt) as forward-looking dependencies but are not wired into the UI beyond mock data today.
 
+For M4 ingestion provider research and source selection defaults, see [`docs/source-inventory-m4.md`](source-inventory-m4.md).
+
 ## Runtime flow
 
 ```mermaid
