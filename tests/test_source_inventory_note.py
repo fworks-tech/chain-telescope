@@ -19,23 +19,23 @@ class SourceInventoryNoteTests(unittest.TestCase):
   def test_issue_mapping_matches_14_to_18_scope(self):
     content = SOURCE_NOTE.read_text(encoding="utf-8")
     self.assertIn(
-      "| #14 | Wire sidebar filters to dashboard data queries so selected watchlist/time windows apply consistently to market and feed panels |",
+      "| #14 — wire sidebar filters to dashboard data | Keep market/feed providers queryable by selected watchlist/time-window filters so panel data can be filtered consistently |",
       content
     )
     self.assertIn(
-      "| #15 | Implement market ingestion adapter with Binance default + CoinGecko fallback and graceful degradation when provider config is unset |",
+      "| #15 — market data ingestion module | Implement market ingestion adapter with Binance default + CoinGecko fallback and graceful degradation when provider config is unset |",
       content
     )
     self.assertIn(
-      "| #16 | Implement news/feed ingestion normalization around RSS/Atom (`feedparser` schema + dedupe + timestamps) with NewsAPI fallback |",
+      "| #16 — news feed ingestion module | Implement news/feed ingestion normalization around RSS/Atom (`feedparser` schema + dedupe + timestamps) with NewsAPI fallback |",
       content
     )
     self.assertIn(
-      "| #17 | Build alert rules over normalized market + high-confidence investor/developer signals, including per-signal confidence metadata |",
+      "| #17 — alerts rules engine (MVP) | Build alert rules over normalized market + high-confidence investor/developer signals, including per-signal confidence metadata |",
       content
     )
     self.assertIn(
-      "| #18 | Implement newsletter persistence/delivery using normalized feed + market deltas, with cached fallback content and environment-based secrets |",
+      "| #18 — newsletter persistence and delivery (MVP) | Implement newsletter persistence/delivery using normalized feed + market deltas, with cached fallback content and environment-based secrets |",
       content
     )
 

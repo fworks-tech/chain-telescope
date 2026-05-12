@@ -6,7 +6,7 @@ This note inventories practical, local/CI-friendly data source options for M4 in
 
 | Source | Access | Cost / License | Freshness & Quotas | Repo fit |
 |---|---|---|---|---|
-| Binance public market endpoints | REST + websocket (`/api/v3/klines`, depth, ticker, futures APIs) | Free public endpoints; exchange ToS applies | Near real-time; weight-based limits; occasional regional restrictions | Strong for spot+derivatives+order book with no key for baseline |
+| Binance public market endpoints | REST (`/api/v3/klines`, depth, ticker, futures APIs) + websocket streams | Free public endpoints; exchange ToS applies | Near real-time; weight-based limits; occasional regional restrictions | Strong for spot+derivatives+order book with no key for baseline |
 | CoinGecko API (free/demo + paid) | REST (markets, OHLC, categories) | Free tier + paid plans; attribution required | Good for dashboard cadence; key and per-minute limits | Strong aggregator fallback across many assets/exchanges |
 | CCXT (library over many exchanges) | Python SDK wrapping exchange APIs | OSS library; underlying exchange ToS | Depends on exchange and configured rate-limit handling | Good abstraction layer, but adds integration complexity |
 | Kaiko / CoinAPI / CryptoCompare | Vendor APIs | Paid/commercial licenses | High quality historical + SLAs | Defer until paid vendor need is explicit |
@@ -69,13 +69,13 @@ This note inventories practical, local/CI-friendly data source options for M4 in
 
 ## Mapping to existing issues and follow-ups
 
-| Issue | Proposed source decision linkage |
+| Issue | Scope-aligned source decision linkage |
 |---|---|
-| #14 | Wire sidebar filters to dashboard data queries so selected watchlist/time windows apply consistently to market and feed panels |
-| #15 | Implement market ingestion adapter with Binance default + CoinGecko fallback and graceful degradation when provider config is unset |
-| #16 | Implement news/feed ingestion normalization around RSS/Atom (`feedparser` schema + dedupe + timestamps) with NewsAPI fallback |
-| #17 | Build alert rules over normalized market + high-confidence investor/developer signals, including per-signal confidence metadata |
-| #18 | Implement newsletter persistence/delivery using normalized feed + market deltas, with cached fallback content and environment-based secrets |
+| #14 — wire sidebar filters to dashboard data | Keep market/feed providers queryable by selected watchlist/time-window filters so panel data can be filtered consistently |
+| #15 — market data ingestion module | Implement market ingestion adapter with Binance default + CoinGecko fallback and graceful degradation when provider config is unset |
+| #16 — news feed ingestion module | Implement news/feed ingestion normalization around RSS/Atom (`feedparser` schema + dedupe + timestamps) with NewsAPI fallback |
+| #17 — alerts rules engine (MVP) | Build alert rules over normalized market + high-confidence investor/developer signals, including per-signal confidence metadata |
+| #18 — newsletter persistence and delivery (MVP) | Implement newsletter persistence/delivery using normalized feed + market deltas, with cached fallback content and environment-based secrets |
 | Proposed new issue | “Provider registry + signal confidence taxonomy” to standardize source metadata and alert scoring |
 
 ## Risks and prerequisites
