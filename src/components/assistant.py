@@ -4,12 +4,49 @@ import requests
 import streamlit as st
 from streamlit.errors import StreamlitSecretNotFoundError
 
-from src.data.mock_market import (
-  alert_snapshot_lines,
-  kpi_snapshot_lines,
-  news_snapshot_lines,
-  trending_report_frame,
-)
+from src.data.mock_market import alerts_snapshot, kpi_snapshot_lines, news_snapshot, trending_report_frame
+
+DOMAIN_KEYWORDS_ALLOWLIST = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
+MIN_TOKEN_LENGTH = 3
+MAX_SMART_MATCHES = 5
+MAX_HISTORY_MESSAGES = 6
+
+
+def _normalize_history(messages):
+  history = []
+  for msg in messages or []:
+    role = msg.get("role")
+    content = msg.get("content")
+    if role in {"user", "assistant"} and isinstance(content, str) and content.strip():
+      history.append({"role": role, "content": content.strip()})
+  return history
+
+
+def _smart_context_search(prompt, context):
+  tokens = [t.strip(".,:;!?()[]{}\"'").lower() for t in prompt.split()]
+  tokens = [t for t in tokens if t in DOMAIN_KEYWORDS_ALLOWLIST or len(t) >= MIN_TOKEN_LENGTH]
+  if not tokens:
+    return []
+
+  candidates = [
+    f"Watchlist: {', '.join(context['watchlist']) if context['watchlist'] else 'none'}",
+    *context["kpis"],
+    *context["alerts"],
+    *context["news"],
+    *(
+      f"Trending {row['Asset']}: {row['7D Change']} | {row['Sentiment']} | Risk {row['Risk']}"
+      for row in context["trending_top3"]
+    ),
+  ]
+
+  matches = []
+  lowered_candidates = [(text, text.lower()) for text in candidates]
+  for text, lowered in lowered_candidates:
+    if any(token in lowered for token in tokens):
+      matches.append(text)
+    if len(matches) >= MAX_SMART_MATCHES:
+      break
+  return matches[:MAX_SMART_MATCHES]
 
 
 def _read_secret_or_env(name, default=None):
@@ -23,12 +60,13 @@ def _read_secret_or_env(name, default=None):
 
 def _build_context(time_window, watchlist):
   top_trending = trending_report_frame().head(3).to_dict("records")
+  kpis = kpi_snapshot_lines()
   return {
     "time_window": time_window,
     "watchlist": watchlist,
-    "kpis": kpi_snapshot_lines(),
-    "alerts": alert_snapshot_lines(),
-    "news": news_snapshot_lines(),
+    "kpis": kpis,
+    "alerts": alerts_snapshot(),
+    "news": news_snapshot(),
     "trending_top3": top_trending,
   }
 
@@ -36,17 +74,20 @@ def _build_context(time_window, watchlist):
 def _fallback_response(context, reason):
   watchlist = ", ".join(context["watchlist"]) if context["watchlist"] else "no assets selected"
   top_names = ", ".join(row["Asset"] for row in context["trending_top3"])
+  kpis = context.get("kpis", [])
+  lead_kpi = kpis[0] if kpis else "KPI snapshot unavailable"
   return (
     "I can still summarize the current dashboard context:\n"
     f"- Watchlist: {watchlist}\n"
     f"- Time window: {context['time_window']}\n"
+    f"- KPI snapshot: {lead_kpi}\n"
     f"- Top trending assets: {top_names}\n"
     f"- Active alert examples: {context['alerts'][0]}; {context['alerts'][1]}\n\n"
     f"GPT provider is unavailable ({reason}). Set `OPENAI_API_KEY` in environment or Streamlit secrets to enable live responses."
   )
 
 
-def _query_model(prompt, context):
+def _query_model(prompt, context, history=None):
   api_key = _read_secret_or_env("OPENAI_API_KEY", "")
   if not api_key:
     return _fallback_response(context, "missing credentials")
@@ -66,6 +107,7 @@ def _query_model(prompt, context):
     "Offer practical next-step suggestions based on the shown dashboard panels."
   )
 
+  relevant_matches = _smart_context_search(prompt, context)
   user_prompt = (
     f"Question: {prompt}\n\n"
     f"Context:\n"
@@ -75,13 +117,16 @@ def _query_model(prompt, context):
     f"- Alerts: {', '.join(context['alerts'])}\n"
     f"- News: {', '.join(context['news'])}\n"
     f"- Trending Top3: {context['trending_top3']}\n"
+    f"- Smart Matches: {relevant_matches if relevant_matches else 'none'}\n"
   )
 
   headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+  conversation = _normalize_history(history)[-MAX_HISTORY_MESSAGES:]
   body = {
     "model": model,
     "messages": [
       {"role": "system", "content": system_prompt},
+      *conversation,
       {"role": "user", "content": user_prompt},
     ],
     "temperature": 0.2,
@@ -127,8 +172,9 @@ def render_assistant_panel(time_window, watchlist):
 
   prompt = st.chat_input("Ask about the current dashboard context")
   if prompt:
+    history = st.session_state.assistant_messages.copy()
     st.session_state.assistant_messages.append({"role": "user", "content": prompt})
-    answer = _query_model(prompt, context)
+    answer = _query_model(prompt, context, history=history)
     st.session_state.assistant_messages.append({"role": "assistant", "content": answer})
     st.rerun()
 

@@ -80,7 +80,13 @@ Use environment variables or Streamlit secrets (`.streamlit/secrets.toml`); do n
 - `OPENAI_MODEL` (optional, default `gpt-4o-mini`)
 - `OPENAI_TIMEOUT_SECONDS` (optional, default `15`)
 
-If credentials are missing, rate-limited, or provider calls fail, the assistant returns a local fallback summary instead of crashing.
+If credentials are missing, rate-limited, or provider calls fail, the assistant returns a safe local fallback summary instead of crashing.
+
+### Provider and interface choice (current)
+
+- **Interface now:** Python/Streamlit in-app chat panel (MVP).
+- **Messenger channels (WhatsApp/Telegram):** out of scope for this issue and planned as a later delivery surface.
+- **Provider strategy:** OpenAI-compatible endpoint so teams can compare providers by model quality, latency, and cost without changing UI flow. Use `OPENAI_BASE_URL` + `OPENAI_MODEL` for A/B comparisons.
 
 ### Product boundaries
 
@@ -92,6 +98,12 @@ If credentials are missing, rate-limited, or provider calls fail, the assistant 
 
 - Richer grounding from data-backed panels and ingestion: #14–#18
 - Source discovery follow-through: #22 and [`docs/source-inventory-m4.md`](docs/source-inventory-m4.md)
+- Suggested next issues: chat persistence/history storage, retrieval/tool use against ingested datasets, and source citation rendering
+
+### Assistant validation
+
+- `python -m py_compile app.py src/components/assistant.py tests/test_assistant.py`
+- `python -m unittest tests/test_assistant.py`
 
 ### Current limitations
 - Demo and mock data under `src/`, not live market feeds

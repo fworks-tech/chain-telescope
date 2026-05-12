@@ -34,18 +34,30 @@ def risk_graph_colors():
   return ["#f79009", "#12b76a", "#f04438", "#3b5bff"]
 
 
-def kpi_snapshot_lines():
+def kpi_snapshot():
   return [
-    "Market Cap Tracked: $2.14T (+2.8%)",
-    "24H Volume: $86.3B (+5.1%)",
-    "Risk Index: 62 / 100 (Elevated)",
-    "Active Alerts: 7 (3 triggered today)",
+    {"label": "Market Cap Tracked", "value": "$2.14T", "delta": "+2.8%", "color": "#12b76a"},
+    {"label": "24H Volume", "value": "$86.3B", "delta": "+5.1%", "color": "#12b76a"},
+    {"label": "Risk Index", "value": "62 / 100", "delta": "Elevated", "color": "#f79009"},
+    {"label": "Active Alerts", "value": "7", "delta": "3 triggered today", "color": "#3b5bff"},
   ]
 
 
-def alert_snapshot_lines():
+def alerts_snapshot():
   return ["BTC below 63,500", "ETH RSI crossed 70", "SOL breakout"]
 
 
-def news_snapshot_lines():
+def news_snapshot():
   return ["ETF flows rebound", "Layer-1 activity rotates to SOL", "Exchange reserves decline"]
+
+
+def kpi_snapshot_lines():
+  return [f"{item['label']}: {item['value']} ({item['delta']})" for item in kpi_snapshot()]
+
+
+def alert_snapshot_lines():
+  return list(alerts_snapshot())
+
+
+def news_snapshot_lines():
+  return list(news_snapshot())
