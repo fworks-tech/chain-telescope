@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+    branches: [ main, master, "feat/**" ]
+  pull_request:
+
+jobs:
+  basic-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate Python files
+        run: |
+          python - << 'PY'
+          import pathlib, py_compile
+          candidates = [pathlib.Path("app.py")]
+          existing = [p for p in candidates if p.exists()]
+          if existing:
+              for p in existing:
+                  py_compile.compile(str(p), doraise=True)
+              print("Compiled:", ", ".join(str(p) for p in existing))
+          else:
+              print("No app.py yet on this branch; skipping compile target.")
+          PY
