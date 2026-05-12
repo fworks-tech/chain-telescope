@@ -57,6 +57,7 @@ class AssistantIntegrationTests(unittest.TestCase):
     self.assertEqual(sent_messages[1]["role"], "user")
     self.assertEqual(sent_messages[2]["role"], "assistant")
     self.assertIn("Smart Matches", sent_messages[-1]["content"])
+    self.assertIn("SOL", sent_messages[-1]["content"])
 
   @patch("src.components.assistant._read_secret_or_env")
   def test_query_model_missing_credentials_uses_safe_fallback(self, mock_read_secret_or_env):
@@ -64,6 +65,7 @@ class AssistantIntegrationTests(unittest.TestCase):
     context = _build_context("24H", ["BTC"])
     answer = _query_model("summarize", context, history=[])
     self.assertIn("GPT provider is unavailable (missing credentials)", answer)
+    self.assertIn("Watchlist: BTC", answer)
 
 
 if __name__ == "__main__":

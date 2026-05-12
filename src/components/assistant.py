@@ -14,6 +14,9 @@ KPIS = [
   "Risk Index: 62 / 100 (Elevated)",
   "Active Alerts: 7 (3 triggered today)",
 ]
+IMPORTANT_SHORT_TOKENS = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
+MAX_SMART_MATCHES = 5
+MAX_HISTORY_MESSAGES = 6
 
 
 def _normalize_history(messages):
@@ -28,7 +31,7 @@ def _normalize_history(messages):
 
 def _smart_context_search(prompt, context):
   tokens = [t.strip(".,:;!?()[]{}\"'").lower() for t in prompt.split()]
-  tokens = [t for t in tokens if len(t) >= 3]
+  tokens = [t for t in tokens if len(t) >= 3 or t in IMPORTANT_SHORT_TOKENS]
   if not tokens:
     return []
 
@@ -45,7 +48,7 @@ def _smart_context_search(prompt, context):
     lowered = text.lower()
     if any(token in lowered for token in tokens):
       matches.append(text)
-  return matches[:5]
+  return matches[:MAX_SMART_MATCHES]
 
 
 def _read_secret_or_env(name, default=None):
@@ -116,7 +119,7 @@ def _query_model(prompt, context, history=None):
   )
 
   headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-  conversation = _normalize_history(history)[-6:]
+  conversation = _normalize_history(history)[-MAX_HISTORY_MESSAGES:]
   body = {
     "model": model,
     "messages": [
