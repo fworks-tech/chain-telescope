@@ -22,4 +22,4 @@ html, body, [data-testid="stAppViewContainer"]{
 
 
 def inject_global_styles():
-  st.markdown(GLOBAL_STYLE, unsafe_allow_html=True)
+    st.markdown(GLOBAL_STYLE, unsafe_allow_html=True)
