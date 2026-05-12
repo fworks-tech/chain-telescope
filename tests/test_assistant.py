@@ -21,6 +21,7 @@ class AssistantUnitTests(unittest.TestCase):
     context = _build_context("30D", ["BTC", "ETH"])
     matches = _smart_context_search("Any BTC alert and ETF news update?", context)
     merged = " | ".join(matches)
+    self.assertIn("BTC below 63,500", " | ".join(context["alerts"]))
     self.assertIn("BTC", merged)
     self.assertTrue(any("ETF" in item for item in matches))
     self.assertTrue(any("alert" in item.lower() for item in matches))

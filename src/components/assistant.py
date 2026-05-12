@@ -14,7 +14,8 @@ KPIS = [
   "Risk Index: 62 / 100 (Elevated)",
   "Active Alerts: 7 (3 triggered today)",
 ]
-ALLOWED_SHORT_DOMAIN_TOKENS = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
+DOMAIN_KEYWORDS_ALLOWLIST = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
+MIN_TOKEN_LENGTH = 3
 MAX_SMART_MATCHES = 5
 MAX_HISTORY_MESSAGES = 6
 
@@ -31,7 +32,7 @@ def _normalize_history(messages):
 
 def _smart_context_search(prompt, context):
   tokens = [t.strip(".,:;!?()[]{}\"'").lower() for t in prompt.split()]
-  tokens = [t for t in tokens if t in ALLOWED_SHORT_DOMAIN_TOKENS or len(t) >= 3]
+  tokens = [t for t in tokens if t in DOMAIN_KEYWORDS_ALLOWLIST or len(t) >= MIN_TOKEN_LENGTH]
   if not tokens:
     return []
 
@@ -77,7 +78,8 @@ def _build_context(time_window, watchlist):
 def _fallback_response(context, reason):
   watchlist = ", ".join(context["watchlist"]) if context["watchlist"] else "no assets selected"
   top_names = ", ".join(row["Asset"] for row in context["trending_top3"])
-  lead_kpi = context["kpis"][0] if context["kpis"] else "KPI snapshot unavailable"
+  kpis = context.get("kpis", [])
+  lead_kpi = kpis[0] if kpis else "KPI snapshot unavailable"
   return (
     "I can still summarize the current dashboard context:\n"
     f"- Watchlist: {watchlist}\n"
