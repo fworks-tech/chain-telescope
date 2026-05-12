@@ -1,7 +1,28 @@
-# GitHub Codespaces ♥️ Jupyter Notebooks
+# Crypto Market Analyzer
 
-Welcome to your shiny new codespace! We've got everything fired up and running for you to explore Python and Jupyter notebooks.
+A modern platform for crypto intelligence, built to transform noisy market data into practical decisions.
 
-You've got a blank canvas to work on from a git perspective as well. There's a single initial commit with what you're seeing right now - where you go from here is up to you!
+## Purpose
+This project delivers a focused crypto analysis experience with:
+- Market monitoring and watchlists
+- Alerts and threshold notifications
+- News aggregation and signal extraction
+- Trending reports
+- Risk and volatility graphs
+- Email newsletter for subscribers
 
-Everything you do here is contained within this one codespace. There is no repository on GitHub yet. If and when you’re ready you can click "Publish Branch" and we’ll create your repository and push up your project. If you were just exploring then and have no further need for this code then you can simply delete your codespace and it's gone forever.
+## Near-Term Product Scope
+- Dashboard with key market KPIs
+- Live trend charting and risk panels
+- Alerts feed and configurable rules
+- Curated market-news stream
+- Scheduled newsletter generation
+
+## Future Features (Far-Future)
+- WhatsApp conversational delivery with same content from the web platform
+- Buy/sell execution through partner exchanges
+
+## Tech Direction
+- Streamlit UI client for fast iteration
+- Python data pipelines for market/news ingestion
+- CI automation and agent-driven repository workflows
