@@ -57,7 +57,10 @@ def _query_model(prompt, context):
 
   base_url = _read_secret_or_env("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
   model = _read_secret_or_env("OPENAI_MODEL", "gpt-4o-mini")
-  timeout_seconds = float(_read_secret_or_env("OPENAI_TIMEOUT_SECONDS", 15))
+  try:
+    timeout_seconds = float(_read_secret_or_env("OPENAI_TIMEOUT_SECONDS", 15))
+  except (TypeError, ValueError):
+    timeout_seconds = 15
 
   system_prompt = (
     "You are Ceremco AI, an in-app crypto dashboard assistant. "
@@ -99,8 +102,11 @@ def _query_model(prompt, context):
     return content if content else _fallback_response(context, "empty response")
   except requests.Timeout:
     return _fallback_response(context, "request timeout")
-  except requests.RequestException:
-    return _fallback_response(context, "provider request failed")
+  except requests.RequestException as exc:
+    status_code = getattr(getattr(exc, "response", None), "status_code", None)
+    if status_code:
+      return _fallback_response(context, f"provider HTTP {status_code}")
+    return _fallback_response(context, "network/provider request failed")
   except (KeyError, ValueError, TypeError):
     return _fallback_response(context, "provider response parse failed")
 
