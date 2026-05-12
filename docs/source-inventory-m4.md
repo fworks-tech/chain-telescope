@@ -22,7 +22,7 @@ This note inventories practical, local/CI-friendly data source options for M4 in
 | CoinDesk, The Block, Cointelegraph feeds | RSS/Atom via `feedparser` | Usually free read access; publisher terms apply | Minutes; low ingestion cost; occasional feed changes | Strong for direct ingestion with parser normalization |
 | Chain/project blogs (Ethereum, Solana, L2s) | RSS/Atom + changelog pages | Free public content | Event-driven release cadence | Strong for protocol-specific context and release correlations |
 | Macro feeds (Fed, ECB, IMF press releases) | RSS/Atom/web feeds | Free public sources | Lower frequency, high macro relevance | Good background context for market move explanations |
-| NewsAPI / GDELT / aggregators | API | Free limited + paid tiers | API-key quotas and pagination constraints | Useful fallback when RSS coverage gaps appear |
+| NewsAPI / GDELT APIs | API | Free limited + paid tiers | API-key quotas and pagination constraints | Useful fallback when RSS coverage gaps appear |
 
 **Recommended default path:** RSS/Atom first (crypto outlets + official protocol blogs + macro outlets) normalized through `feedparser` into one schema (`id`, `source`, `published_at`, `title`, `url`, `tags`).
 
@@ -67,20 +67,20 @@ This note inventories practical, local/CI-friendly data source options for M4 in
 | Panel / feature | Default | Fallback | Notes |
 |---|---|---|---|
 | KPIs + trend chart | Binance public endpoints | CoinGecko market endpoints | Works locally/CI without paid-only dependency when endpoints are reachable |
-| Alerts/news feed | RSS/Atom via `feedparser` (crypto + official blogs + macro) | News API aggregator (free tier) | Normalize + dedupe by URL/title hash |
+| Alerts/news feed | RSS/Atom via `feedparser` (crypto + official blogs + macro) | NewsAPI (free tier) | Normalize + dedupe by URL/title hash |
 | Risk/context panel | ETF flows + EDGAR summaries + official status pages | Curated on-chain watchlist snapshots | Weight alerts by source confidence |
 | Newsletter source set | Same normalized feed store + top market movers | Cached last-good bundle | Ensure deterministic output when APIs fail |
 
 ## Mapping to existing issues and follow-ups
 
-| Issue | Proposed source decision linkage |
+| Issue | Scope-aligned source decision linkage |
 |---|---|
-| [#14](https://github.com/fworks-tech/Jupyter-Crypto-Wizard/issues/14) | Drive mock then live queries from sidebar time window and watchlist through shared adapter interfaces |
-| [#15](https://github.com/fworks-tech/Jupyter-Crypto-Wizard/issues/15) | Market provider adapter with Binance default and CoinGecko fallback for KPIs, OHLCV, and trend inputs |
-| [#16](https://github.com/fworks-tech/Jupyter-Crypto-Wizard/issues/16) | Feed normalization pipeline around RSS/Atom (`feedparser` schema + dedupe + timestamps) |
-| [#17](https://github.com/fworks-tech/Jupyter-Crypto-Wizard/issues/17) | Alert rules over normalized market + high-confidence investor/developer signals; include confidence metadata |
-| [#18](https://github.com/fworks-tech/Jupyter-Crypto-Wizard/issues/18) | Newsletter inputs from normalized feeds + market deltas with cached fallback mode |
-| Proposed follow-up | Provider registry + signal confidence taxonomy to standardize source metadata and alert scoring |
+| #14 — wire sidebar filters to dashboard data | Keep market/feed providers queryable by selected watchlist/time-window filters so panel data can be filtered consistently |
+| #15 — market data ingestion module | Implement market ingestion adapter with Binance default + CoinGecko fallback and graceful degradation when provider config is unset |
+| #16 — news feed ingestion module | Implement news/feed ingestion normalization around RSS/Atom (`feedparser` schema + dedupe + timestamps) with NewsAPI fallback |
+| #17 — alerts rules engine (MVP) | Build alert rules over normalized market + high-confidence investor/developer signals, including per-signal confidence metadata |
+| #18 — newsletter persistence and delivery (MVP) | Implement newsletter persistence/delivery using normalized feed + market deltas, with cached fallback content and environment-based secrets |
+| Proposed new issue | Provider registry + signal confidence taxonomy to standardize source metadata and alert scoring |
 
 ## Risks and prerequisites
 
