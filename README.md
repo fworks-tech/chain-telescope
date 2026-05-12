@@ -115,18 +115,33 @@ If credentials are missing, rate-limited, or provider calls fail, the assistant 
 - `python -m unittest tests/test_assistant.py`
 
 ### Current limitations
-- Demo and mock data under `src/`, not live market feeds
-- Sidebar navigation labels are not separate routed pages yet (#12)
-- Several packages in `requirements.txt` are reserved for future pipelines and are not used by `app.py` today
+- Market and feed providers fall back to mock or cached-safe output when remote configuration is unset or requests fail
+- Newsletter delivery uses local persistence with a stub provider unless `NEWSLETTER_PROVIDER` and related secrets are configured
+- Scheduled outbound jobs are not running in the repository yet
+
+### Provider configuration
+
+Optional environment variables and Streamlit secrets are documented in [`docs/configuration.md`](docs/configuration.md).
 
 ## CI
 
-On push and pull request to `main`, `master`, and `feat/**`, GitHub Actions installs `requirements.txt`, compiles `app.py`, and runs `python -m unittest discover -s tests -p 'test_*.py'`. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml). CI does not start Streamlit or run browser tests.
+On push and pull request to `main`, `master`, and `feat/**`, GitHub Actions installs `requirements.txt`, compiles `app.py` and `src/**/*.py`, imports the Streamlit entrypoint, and runs `python -m unittest discover -s tests -p 'test_*.py'`. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml). CI does not start Streamlit or run browser tests.
 
 ## Project Layout
-- `app.py` — Streamlit UI entrypoint
+- `app.py` — Streamlit UI entrypoint and navigation shell
+- `pages/` — routed Dashboard, Alerts, News, Risk, and Newsletter pages
+- `src/` — UI components, query layer, ingestion helpers, and validation
 - `requirements.txt` — Python dependencies
-- `docs/` — architecture and automation playbooks
+- `docs/` — architecture, configuration, validation, and automation playbooks
+
+## Documentation
+
+- [`docs/Architecture.md`](docs/Architecture.md) — system structure and runtime flow
+- [`docs/configuration.md`](docs/configuration.md) — environment variables and secrets
+- [`docs/m4-data-pipelines.md`](docs/m4-data-pipelines.md) — dashboard snapshots, ingestion, alerts, and newsletter modules
+- [`docs/validation-and-manual-qa.md`](docs/validation-and-manual-qa.md) — automated checks and manual smoke tests
+- [`docs/source-inventory-m4.md`](docs/source-inventory-m4.md) — M4 source discovery research
+- [`docs/agent-skills.md`](docs/agent-skills.md) — agent automation playbook
 
 ## Architecture
 
