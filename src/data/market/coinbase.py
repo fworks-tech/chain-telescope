@@ -4,6 +4,7 @@ from src.data.market.config import load_market_config
 
 PRODUCT_IDS = COINBASE_PRODUCTS
 
+
 def fetch_coinbase_series(asset: str, days: int):
     config = load_market_config()
     product = PRODUCT_IDS.get(asset)

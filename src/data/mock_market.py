@@ -66,6 +66,7 @@ def _mock_trending_row(asset: str) -> tuple[str, str, str]:
 ASSET_BASE_PRICES = {asset: _mock_base_price(asset) for asset in WATCHLIST_OPTIONS}
 TRENDING_ROWS = {asset: _mock_trending_row(asset) for asset in WATCHLIST_OPTIONS}
 
+
 def _change_percent(change: str) -> float:
     return float(change.replace("%", "").replace("+", ""))
 

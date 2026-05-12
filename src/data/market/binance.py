@@ -4,6 +4,7 @@ from src.data.market.config import load_market_config
 
 ASSET_SYMBOLS = BINANCE_SYMBOLS
 
+
 def fetch_binance_series(asset: str, days: int):
     config = load_market_config()
     symbol = ASSET_SYMBOLS.get(asset)
