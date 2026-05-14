@@ -226,6 +226,6 @@ MIT — see [`LICENSE`](LICENSE).
 <!-- fworks-readme-footer v1 -->
 ## Links
 
-- Repositório: https://github.com/fworks-tech/Jupyter-Crypto-Wizard
+- Repository: https://github.com/fworks-tech/Jupyter-Crypto-Wizard
 - Portfolio: https://fworks.tech
 <!-- /fworks-readme-footer v1 -->
