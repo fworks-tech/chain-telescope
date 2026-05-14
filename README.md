@@ -1,4 +1,4 @@
-# Crypto Market Analyzer
+﻿# Crypto Market Analyzer
 
 A modern platform for crypto intelligence, built to transform noisy market data into practical decisions.
 
@@ -222,3 +222,10 @@ System structure, runtime flow, data boundaries, and planned evolution are docum
 ## License
 
 MIT — see [`LICENSE`](LICENSE).
+
+<!-- fworks-readme-footer v1 -->
+## Links
+
+- Repositório: https://github.com/fworks-tech/Jupyter-Crypto-Wizard
+- Portfolio: https://fworks.tech
+<!-- /fworks-readme-footer v1 -->
