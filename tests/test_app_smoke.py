@@ -2,6 +2,7 @@ import importlib
 import pathlib
 import unittest
 
+from app import _greeting_for_hour
 from streamlit.testing.v1 import AppTest
 
 
@@ -32,10 +33,25 @@ class AppSmokeTests(unittest.TestCase):
         self.assertEqual(len(app_test.get("plotly_chart")), 0)
         self.assertTrue(any("Alerts" in item.value for item in app_test.get("markdown")))
 
-    def test_greeting_is_not_hardcoded_to_single_user(self):
+    def test_greeting_excludes_hardcoded_username(self):
         app_test = AppTest.from_file("app.py")
         app_test.run(timeout=15)
         self.assertFalse(any("Richard" in item.value for item in app_test.get("markdown")))
+        self.assertTrue(
+            any(
+                phrase in item.value
+                for item in app_test.get("markdown")
+                for phrase in ("Good Morning", "Good Afternoon", "Good Evening")
+            )
+        )
+
+    def test_greeting_hour_boundaries(self):
+        self.assertEqual(_greeting_for_hour(4), "Good Evening")
+        self.assertEqual(_greeting_for_hour(5), "Good Morning")
+        self.assertEqual(_greeting_for_hour(11), "Good Morning")
+        self.assertEqual(_greeting_for_hour(12), "Good Afternoon")
+        self.assertEqual(_greeting_for_hour(17), "Good Afternoon")
+        self.assertEqual(_greeting_for_hour(18), "Good Evening")
 
 
 if __name__ == "__main__":

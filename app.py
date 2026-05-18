@@ -5,7 +5,7 @@ import streamlit as st
 from src.components.newsletter import render_newsletter
 from src.data.dashboard_query import DashboardSnapshot, load_dashboard_snapshot
 
-st.set_page_config(page_title="Crypto Market Analyzer", page_icon="📈", layout="wide")
+st.set_page_config(page_title="Jupyter Crypto Wizard", page_icon="📈", layout="wide")
 
 st.markdown(
     """
@@ -122,16 +122,20 @@ def _render_highlights(title: str, lines: list[str]) -> None:
     st.markdown("</div>", unsafe_allow_html=True)
 
 
+def _greeting_for_hour(hour: int) -> str:
+    """Return a UTC greeting label for a 24-hour clock value."""
+    if 5 <= hour < 12:
+        return "Good Morning"
+    if 12 <= hour < 18:
+        return "Good Afternoon"
+    return "Good Evening"
+
+
 snapshot = load_dashboard_snapshot(time_window=time_window, watchlist=watchlist)
 
 display_name = st.session_state.get("display_name")
 now_utc = datetime.now(UTC)
-if 5 <= now_utc.hour < 12:
-    greeting = "Good Morning"
-elif now_utc.hour < 18:
-    greeting = "Good Afternoon"
-else:
-    greeting = "Good Evening"
+greeting = _greeting_for_hour(now_utc.hour)
 st.markdown(f"## {greeting}{f', {display_name}' if display_name else ''}")
 st.caption(f"Live snapshot • {now_utc:%Y-%m-%d %H:%M} UTC")
 
