@@ -123,7 +123,7 @@ def _render_highlights(title: str, lines: list[str]) -> None:
 
 
 def _greeting_for_hour(hour: int) -> str:
-    """Return a UTC greeting label for a 24-hour clock value."""
+    """Return a time-of-day greeting for the provided UTC hour."""
     if 5 <= hour < 12:
         return "Good Morning"
     if 12 <= hour < 18:
