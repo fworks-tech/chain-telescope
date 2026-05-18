@@ -1,4 +1,4 @@
-﻿# Crypto Market Analyzer
+# Jupyter Crypto Wizard
 
 A modern platform for crypto intelligence, built to transform noisy market data into practical decisions.
 
