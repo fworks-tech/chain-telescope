@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+﻿# Crypto Market Analyzer
+=======
 # Jupyter Crypto Wizard
+>>>>>>> 1c3864b (feat: add Streamlit dashboard v1)
 
 A modern platform for crypto intelligence, built to transform noisy market data into practical decisions.
 
