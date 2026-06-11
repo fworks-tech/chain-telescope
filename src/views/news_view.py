@@ -17,5 +17,5 @@ def render_news_page(time_window: str, watchlist: list[str], market_source: str,
             "URL": [item.url for item in snapshot.news_items],
         },
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
