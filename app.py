@@ -1,3 +1,4 @@
+import html as _html
 from datetime import UTC, datetime
 
 import plotly.graph_objects as go
@@ -31,7 +32,7 @@ html, body, [data-testid="stAppViewContainer"]{
 )
 
 with st.sidebar:
-    st.markdown("## Ceremco AI")
+    st.markdown("## Jupyter Crypto Wizard")
     st.caption("Crypto Command Center")
     nav = st.radio(
         "Nav", ["Dashboard", "Alerts", "News", "Risk", "Newsletter"], label_visibility="collapsed"
@@ -79,7 +80,7 @@ def _render_trend(snapshot: DashboardSnapshot) -> None:
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
     st.caption(f"Asset: {snapshot.primary_asset} • Window: {snapshot.time_window}")
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -87,7 +88,7 @@ def _render_trend(snapshot: DashboardSnapshot) -> None:
 def _render_trending(snapshot: DashboardSnapshot) -> None:
     st.markdown('<div class="panel">', unsafe_allow_html=True)
     st.subheader("Trending Report")
-    st.dataframe(snapshot.trending, hide_index=True, use_container_width=True)
+    st.dataframe(snapshot.trending, hide_index=True, width="stretch")
     st.markdown("</div>", unsafe_allow_html=True)
 
 
@@ -111,14 +112,14 @@ def _render_risk(snapshot: DashboardSnapshot) -> None:
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
     )
-    st.plotly_chart(rfig, use_container_width=True)
+    st.plotly_chart(rfig, width="stretch")
     st.markdown("</div>", unsafe_allow_html=True)
 
 
 def _render_highlights(title: str, lines: list[str]) -> None:
-    st.markdown(f'<div class="panel"><h4>{title}</h4>', unsafe_allow_html=True)
+    st.markdown(f'<div class="panel"><h4>{_html.escape(title)}</h4>', unsafe_allow_html=True)
     for line in lines:
-        st.markdown(f"<p>{line}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p>{_html.escape(line)}</p>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
 
@@ -131,29 +132,29 @@ def _greeting_for_hour(hour: int) -> str:
     return "Good Evening"
 
 
-snapshot = load_dashboard_snapshot(time_window=time_window, watchlist=watchlist)
-
 display_name = st.session_state.get("display_name")
 now_utc = datetime.now(UTC)
 greeting = _greeting_for_hour(now_utc.hour)
 st.markdown(f"## {greeting}{f', {display_name}' if display_name else ''}")
 st.caption(f"Live snapshot • {now_utc:%Y-%m-%d %H:%M} UTC")
 
-if nav == "Dashboard":
-    _render_kpis(snapshot)
-    left, right = st.columns([2.2, 1], gap="large")
-    with left:
-        _render_trend(snapshot)
-        _render_trending(snapshot)
-    with right:
-        _render_risk(snapshot)
-        _render_highlights("Alerts", snapshot.alerts)
-        _render_highlights("News Snapshot", snapshot.news)
-elif nav == "Alerts":
-    _render_highlights("Alerts", snapshot.alerts)
-elif nav == "News":
-    _render_highlights("News Snapshot", snapshot.news)
-elif nav == "Risk":
-    _render_risk(snapshot)
-elif nav == "Newsletter":
+if nav == "Newsletter":
     render_newsletter()
+else:
+    snapshot = load_dashboard_snapshot(time_window=time_window, watchlist=watchlist)
+    if nav == "Dashboard":
+        _render_kpis(snapshot)
+        left, right = st.columns([2.2, 1], gap="large")
+        with left:
+            _render_trend(snapshot)
+            _render_trending(snapshot)
+        with right:
+            _render_risk(snapshot)
+            _render_highlights("Alerts", snapshot.alerts)
+            _render_highlights("News Snapshot", snapshot.news)
+    elif nav == "Alerts":
+        _render_highlights("Alerts", snapshot.alerts)
+    elif nav == "News":
+        _render_highlights("News Snapshot", snapshot.news)
+    elif nav == "Risk":
+        _render_risk(snapshot)
