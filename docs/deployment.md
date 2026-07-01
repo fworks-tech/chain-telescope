@@ -30,9 +30,7 @@ Fill in the values:
 | `OPENAI_MODEL` | No | `gpt-4o-mini` | Model name |
 | `OPENAI_TIMEOUT_SECONDS` | No | `15` | HTTP timeout in seconds |
 | `MARKET_PROVIDER` | No | `auto` | `auto`, `binance`, `coingecko`, `coinbase`, or `mock` |
-| `BINANCE_BASE_URL` | No | `https://api.binance.com` | Binance REST base URL |
-| `COINGECKO_BASE_URL` | No | `https://api.coingecko.com/api/v3` | CoinGecko REST base URL |
-| `MARKET_REQUEST_TIMEOUT_SECONDS` | No | `10` | HTTP timeout for market calls |
+| `MARKET_REQUEST_TIMEOUT_SECONDS` | No | `10` | HTTP timeout for market calls (legacy; ccxt manages its own timeouts) |
 | `NEWS_FEED_URLS` | No | CoinDesk + Cointelegraph RSS | Comma-separated RSS/Atom URLs |
 | `NEWSLETTER_PROVIDER` | No | `stub` | Delivery adapter name |
 | `NEWSLETTER_API_KEY` | For non-stub | — | Provider credential |

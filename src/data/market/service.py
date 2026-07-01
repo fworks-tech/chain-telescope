@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pandas as pd
 from loguru import logger
-from src.data.market import binance, coinbase, coingecko
+from src.data.market.ccxt_adapter import EXCHANGE_NAMES, fetch_ccxt_series
 from src.data.market.config import load_market_config
 from src.data.mock_market import TIME_WINDOW_DAYS, price_trend_series
 
@@ -39,12 +39,8 @@ def _provider_chain(provider: str) -> list[str]:
 
 
 def _fetch_provider_series(provider: str, asset: str, days: int):
-    if provider == "binance":
-        return binance.fetch_binance_series(asset, days)
-    if provider == "coingecko":
-        return coingecko.fetch_coingecko_series(asset, days)
-    if provider == "coinbase":
-        return coinbase.fetch_coinbase_series(asset, days)
+    if provider in EXCHANGE_NAMES:
+        return fetch_ccxt_series(provider, asset, days)
     return None
 
 
