@@ -1,4 +1,5 @@
 import streamlit as st
+
 from src.components.assistant import render_assistant_panel
 from src.components.dashboard_header import render_dashboard_header
 from src.components.feed_panels import render_alerts_panel, render_news_panel
@@ -6,13 +7,13 @@ from src.components.kpi_row import render_kpi_row
 from src.components.price_trend import render_price_trend
 from src.components.risk_graph import render_risk_graph
 from src.components.trending_report import render_trending_report
-from src.data.dashboard_query import load_dashboard_snapshot
+from src.views import cached_dashboard_snapshot
 
 
 def render_dashboard_page(
     time_window: str, watchlist: list[str], market_source: str, trend_filter: str
 ):
-    snapshot = load_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)
+    snapshot = cached_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)
     render_dashboard_header(time_window, watchlist, market_source, trend_filter)
     render_kpi_row(snapshot)
 

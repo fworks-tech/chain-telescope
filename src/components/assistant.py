@@ -4,7 +4,7 @@ import requests
 import streamlit as st
 from streamlit.errors import StreamlitSecretNotFoundError
 
-from src.data.dashboard_query import load_dashboard_snapshot
+from src.views import cached_dashboard_snapshot
 
 DOMAIN_KEYWORDS_ALLOWLIST = {"ai", "etf", "btc", "eth", "sol", "bnb", "xrp", "rsi"}
 MIN_TOKEN_LENGTH = 3
@@ -59,7 +59,7 @@ def _read_secret_or_env(name, default=None):
 
 
 def _build_context(time_window, watchlist, market_source="auto", trend_filter="all"):
-    snapshot = load_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)
+    snapshot = cached_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)
     top_trending = snapshot.trending.head(3).to_dict("records")
     kpis = [f"{item['label']}: {item['value']} ({item['delta']})" for item in snapshot.kpis]
     return {
