@@ -1,16 +1,27 @@
-from fastapi import FastAPI, Query
+import os
+
+from fastapi import Body, FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from loguru import logger
 
 from src.data.dashboard_query import DashboardSnapshot, load_dashboard_snapshot
 
 app = FastAPI(title="ChainTelescope API", version="0.1.0")
 
+origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8501").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(Exception)
+async def global_handler(request, exc):
+    logger.warning("API error on {}: {}", request.url.path, exc)
+    return JSONResponse(status_code=500, content={"error": "Internal server error"})
 
 
 def _snapshot_to_dict(snap: DashboardSnapshot) -> dict:
@@ -75,10 +86,12 @@ def price_trend(
 @app.get("/api/news")
 def news(
     watchlist: str = Query("BTC", description="Comma-separated watchlist"),
+    limit: int = Query(10, description="Max items to return"),
 ):
     from src.data.news.ingestion import load_news_items
 
     items = load_news_items(watchlist=[a.strip() for a in watchlist.split(",") if a.strip()])
+    items = items[: max(limit, 1)]
     return [
         {
             "id": item.id,
@@ -106,9 +119,9 @@ def alerts(
 
 @app.post("/api/newsletter/subscribe")
 def subscribe(
-    email: str = Query(..., description="Email address"),
-    frequency: str = Query("Weekly", description="Daily/Weekly/Biweekly"),
-    format: str = Query("Summary", description="Summary/Deep Dive"),
+    email: str = Body(..., description="Email address"),
+    frequency: str = Body("Weekly", description="Daily/Weekly/Biweekly"),
+    format: str = Body("Summary", description="Summary/Deep Dive"),
 ):
     from src.data.newsletter.store import save_subscription
 

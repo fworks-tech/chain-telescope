@@ -29,13 +29,9 @@ def fetch_price_trend(asset: str, days: int, time_window: str, market_source: st
 
 
 def _provider_chain(provider: str) -> list[str]:
-    if provider == "binance":
-        return ["binance"]
-    if provider == "coingecko":
-        return ["coingecko"]
-    if provider == "coinbase":
-        return ["coinbase"]
-    return ["binance", "coingecko", "coinbase"]
+    if provider in EXCHANGE_NAMES:
+        return [provider]
+    return list(EXCHANGE_NAMES)
 
 
 def _fetch_provider_series(provider: str, asset: str, days: int):

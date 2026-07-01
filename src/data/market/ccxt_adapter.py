@@ -1,3 +1,5 @@
+import datetime
+
 import ccxt
 from tenacity import retry, stop_after_attempt, wait_exponential
 
@@ -33,8 +35,6 @@ def fetch_ccxt_series(exchange_name: str, asset: str, days: int):
     ohlcv = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
     if not ohlcv:
         return None
-
-    import datetime
 
     dates = [datetime.datetime.fromtimestamp(row[0] / 1000) for row in ohlcv]
     prices = [float(row[4]) for row in ohlcv]
