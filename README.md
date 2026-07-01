@@ -1,4 +1,4 @@
-# HashHelm
+# ChainTelescope
 
 A modern command center for crypto intelligence, built to transform noisy market data into practical decisions.
 
