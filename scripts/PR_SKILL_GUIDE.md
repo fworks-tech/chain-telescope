@@ -203,7 +203,7 @@ When changes affect 10+ files, the skill groups them by scope:
 | Scope | Pattern | Description |
 |-------|---------|-------------|
 | data | `data/` | Data files and datasets |
-| ui | `notebooks/` | UI/notebooks |
+| ui | `pages/`, `src/views/` | User interface |
 | docs | `docs/`, `README.md` | Documentation |
 | ci | `.github/` | CI/CD configuration |
 | automation | `requirements.txt`, `scripts/` | Automation scripts and dependencies |
@@ -320,7 +320,7 @@ python scripts/pr-skill.py create \
 **Files Changed (grouped):**
 ```
 **UI** (8 files)
-- `notebooks/dashboard.ipynb`
+- `app.py`, `pages/dashboard.py`
 - `docs/dashboard-guide.md`
 - ... and 6 more
 

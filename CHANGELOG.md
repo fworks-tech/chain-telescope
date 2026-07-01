@@ -48,6 +48,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - README runbook, validation checklists, and `docs/Architecture.md`.
 - Python ignore rules for virtual environments, caches, and local env files.
 
-[Unreleased]: https://github.com/fworks-tech/Jupyter-Crypto-Wizard/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/fworks-tech/Jupyter-Crypto-Wizard/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/fworks-tech/Jupyter-Crypto-Wizard/releases/tag/v0.1.0
+[Unreleased]: https://github.com/fworks-tech/hashhelm/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/fworks-tech/hashhelm/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/fworks-tech/hashhelm/releases/tag/v0.1.0

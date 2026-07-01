@@ -48,7 +48,6 @@ class FileChangeAnalyzer:
     # Mapping of file patterns to scope/category
     SCOPE_MAPPING = {
         "data/": "data",
-        "notebooks/": "ui",
         "docs/": "docs",
         ".github/": "ci",
         "scripts/": "automation",
@@ -190,6 +189,21 @@ Main areas touched:
 - [ ] ci
 - [ ] automation
 
+## Instructions
+How can a reviewer run and verify this change locally?
+
+```powershell
+git fetch origin
+git checkout <branch-name>
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+Add any issue-specific checks, env vars, or compile/test commands here.
+
 ## Files Changed
 {files_changed}
 
@@ -213,6 +227,7 @@ Any behavior changes, migrations, or known limitations.
 ## Checklist
 - [ ] Conventional commit messages used
 - [ ] README/docs updated (if needed)
+- [ ] `CHANGELOG.md` updated for user-visible release changes
 - [ ] No secrets added
 - [ ] Ready for review"""
     
