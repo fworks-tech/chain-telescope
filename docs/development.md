@@ -1,6 +1,6 @@
 # Development Guide
 
-Guide for developers contributing to HashHelm. Covers local setup, coding conventions, testing, and workflow.
+Guide for developers contributing to ChainTelescope. Covers local setup, coding conventions, testing, and workflow.
 
 ## Prerequisites
 
@@ -12,8 +12,8 @@ Guide for developers contributing to HashHelm. Covers local setup, coding conven
 ## Setup
 
 ```powershell
-git clone https://github.com/fworks-tech/hashhelm.git
-cd hashhelm
+git clone https://github.com/fworks-tech/chain-telescope.git
+cd chain-telescope
 
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -64,7 +64,7 @@ python -m unittest discover -s tests -p 'test_*.py' -v
 ## Project structure
 
 ```
-hashhelm/
+chain-telescope/
 ├── app.py                  # Streamlit entrypoint (st.navigation)
 ├── pages/                  # Page stubs → src/views/
 ├── src/

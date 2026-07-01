@@ -1,6 +1,6 @@
 # Operations Runbook
 
-Production runbook for HashHelm. Covers health checks, monitoring, backups, incident response, and common maintenance tasks.
+Production runbook for ChainTelescope. Covers health checks, monitoring, backups, incident response, and common maintenance tasks.
 
 ## Health checks
 
@@ -10,13 +10,13 @@ The Streamlit app exposes no dedicated health endpoint. Verify health by:
 
 ```bash
 # Check process is running
-docker ps | grep hashhelm-streamlit
+docker ps | grep chain-telescope-streamlit
 
 # Check HTTP response (Streamlit returns 200 on its main page)
 curl -s -o /dev/null -w "%{http_code}" http://localhost:8501
 
 # Check logs for errors
-docker logs hashhelm-streamlit --tail 50 | grep -i "error\|traceback\|exception"
+docker logs chain-telescope-streamlit --tail 50 | grep -i "error\|traceback\|exception"
 ```
 
 ### Data provider health
@@ -48,13 +48,13 @@ Application logs go to stderr via loguru. View with:
 
 ```bash
 # Tail live logs
-docker logs -f hashhelm-streamlit
+docker logs -f chain-telescope-streamlit
 
 # Filter warnings (provider failures, feed issues)
-docker logs hashhelm-streamlit 2>&1 | grep "WARNING"
+docker logs chain-telescope-streamlit 2>&1 | grep "WARNING"
 
 # Search for errors in the last hour
-docker logs --since 1h hashhelm-streamlit 2>&1 | grep -i "error\|traceback"
+docker logs --since 1h chain-telescope-streamlit 2>&1 | grep -i "error\|traceback"
 ```
 
 Log format:
@@ -68,7 +68,7 @@ For production, add a free uptime monitor:
 
 - [UptimeRobot](https://uptimerobot.com/) — free tier checks every 5 minutes
 - [Better Uptime](https://betteruptime.com/) — free tier with status page
-- Point to `https://hashhelm.example.com`
+- Point to `https://chain-telescope.example.com`
 
 ### Error tracking
 
@@ -89,15 +89,15 @@ If `SENTRY_DSN` is configured, errors in the Streamlit app and background worker
 ```bash
 # Daily backup script
 #!/bin/bash
-BACKUP_DIR=/var/backups/hashhelm
+BACKUP_DIR=/var/backups/chain-telescope
 mkdir -p $BACKUP_DIR
-cp /opt/hashhelm/data/newsletter_subscriptions.json $BACKUP_DIR/subscriptions-$(date +%Y%m%d).json
+cp /opt/chain-telescope/data/newsletter_subscriptions.json $BACKUP_DIR/subscriptions-$(date +%Y%m%d).json
 find $BACKUP_DIR -name "subscriptions-*.json" -mtime +30 -delete
 ```
 
 Add to crontab:
 ```cron
-0 3 * * * /opt/hashhelm/scripts/backup.sh
+0 3 * * * /opt/chain-telescope/scripts/backup.sh
 ```
 
 ## Incident response
@@ -113,9 +113,9 @@ Add to crontab:
 
 ### Runbook: P0 — App is down
 
-1. Check server: `ping hashhelm.example.com`
+1. Check server: `ping chain-telescope.example.com`
 2. Check Docker: `docker ps` — is the container running?
-3. Check logs: `docker logs hashhelm-streamlit --tail 100`
+3. Check logs: `docker logs chain-telescope-streamlit --tail 100`
 4. Check resources: `df -h`, `free -m`, `top`
 5. Restart: `docker compose restart streamlit`
 6. If no recovery: `docker compose down && docker compose up -d --build`
@@ -136,7 +136,7 @@ Symptom: Price chart shows mock data, news shows fallback headlines
    ```
 3. Check logs for provider errors:
    ```bash
-   docker logs hashhelm-streamlit --since 30m 2>&1 | grep "WARNING.*Provider\|WARNING.*Feed"
+   docker logs chain-telescope-streamlit --since 30m 2>&1 | grep "WARNING.*Provider\|WARNING.*Feed"
    ```
 4. If rate-limited, wait 5 minutes — tenacity retry will self-resolve
 
@@ -144,7 +144,7 @@ Symptom: Price chart shows mock data, news shows fallback headlines
 
 1. Verify provider config:
    ```bash
-   docker exec hashhelm-streamlit env | grep NEWSLETTER
+   docker exec chain-telescope-streamlit env | grep NEWSLETTER
    ```
 2. Check subscription storage:
    ```bash
@@ -160,7 +160,7 @@ Symptom: Price chart shows mock data, news shows fallback headlines
 ### Updating
 
 ```bash
-cd /opt/hashhelm
+cd /opt/chain-telescope
 git pull origin main
 docker compose build --no-cache
 docker compose up -d
@@ -186,7 +186,7 @@ sudo certbot renew
 
 ```bash
 # View live logs
-docker logs -f hashhelm-streamlit
+docker logs -f chain-telescope-streamlit
 
 # Restart without rebuilding
 docker compose restart streamlit
@@ -195,13 +195,13 @@ docker compose restart streamlit
 docker compose down && docker compose up -d --build
 
 # Enter the container
-docker exec -it hashhelm-streamlit bash
+docker exec -it chain-telescope-streamlit bash
 
 # Check resource usage
-docker stats hashhelm-streamlit
+docker stats chain-telescope-streamlit
 
 # Run tests inside container
-docker exec hashhelm-streamlit python -m unittest discover -s tests
+docker exec chain-telescope-streamlit python -m unittest discover -s tests
 ```
 
 ## Related

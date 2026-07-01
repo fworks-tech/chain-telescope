@@ -1,13 +1,13 @@
 # Deployment
 
-HashHelm is a Streamlit app designed to run behind a reverse proxy on a VPS or container environment. This guide covers Docker deployment, environment configuration, domain setup, and CI/CD.
+ChainTelescope is a Streamlit app designed to run behind a reverse proxy on a VPS or container environment. This guide covers Docker deployment, environment configuration, domain setup, and CI/CD.
 
 ## Quick start (Docker)
 
 ```bash
 # Build and start all services
-git clone https://github.com/fworks-tech/hashhelm.git
-cd hashhelm
+git clone https://github.com/fworks-tech/chain-telescope.git
+cd chain-telescope
 docker compose up --build -d
 ```
 
@@ -88,7 +88,7 @@ docker compose up -d
 ```nginx
 server {
     listen 80;
-    server_name hashhelm.example.com;
+    server_name chain-telescope.example.com;
 
     location / {
         proxy_pass http://127.0.0.1:8501;
@@ -108,13 +108,13 @@ server {
 
 ```bash
 sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d hashhelm.example.com
+sudo certbot --nginx -d chain-telescope.example.com
 ```
 
 ### Caddy (simpler alternative)
 
 ```caddyfile
-hashhelm.example.com {
+chain-telescope.example.com {
     reverse_proxy 127.0.0.1:8501
 }
 ```
@@ -127,7 +127,7 @@ You can also deploy directly on [Streamlit Community Cloud](https://streamlit.io
 
 1. Push to GitHub
 2. Log in to share.streamlit.io
-3. Deploy from `fworks-tech/hashhelm`, branch `main`, entrypoint `app.py`
+3. Deploy from `fworks-tech/chain-telescope`, branch `main`, entrypoint `app.py`
 4. Set secrets via the Streamlit Cloud dashboard UI
 
 Limitations: no background workers, no custom domain on free tier, ephemeral storage.

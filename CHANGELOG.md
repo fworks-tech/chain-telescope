@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- Renamed project to HashHelm (was Jupyter-Crypto-Wizard).
+- Renamed project to ChainTelescope (was Jupyter-Crypto-Wizard, then HashHelm).
 - `st.navigation` routing in `app.py` — fully modular architecture via `pages/` → `src/views/` → `src/components/`.
 - `src/logging.py` with centralized loguru sink configuration.
 - `src/views/__init__.py` with `@st.cache_data(ttl=30)` cached snapshot wrapper.
@@ -70,7 +70,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - README runbook, validation checklists, and `docs/Architecture.md`.
 - Python ignore rules for virtual environments, caches, and local env files.
 
-[Unreleased]: https://github.com/fworks-tech/hashhelm/compare/v0.3.0...HEAD
-[0.3.0]: https://github.com/fworks-tech/hashhelm/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/fworks-tech/hashhelm/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/fworks-tech/hashhelm/releases/tag/v0.1.0
+[Unreleased]: https://github.com/fworks-tech/chain-telescope/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/fworks-tech/chain-telescope/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/fworks-tech/chain-telescope/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/fworks-tech/chain-telescope/releases/tag/v0.1.0

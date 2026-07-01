@@ -1,6 +1,6 @@
 # M4 Source Discovery Note: Market, Feeds, Investors, Core Developers
 
-This note inventories practical, local/CI-friendly data source options for M4 ingestion planning. It supports [#22](https://github.com/fworks-tech/hashhelm/issues/22). The current implementation path is documented in [m4-data-pipelines.md](m4-data-pipelines.md).
+This note inventories practical, local/CI-friendly data source options for M4 ingestion planning. It supports [#22](https://github.com/fworks-tech/chain-telescope/issues/22). The current implementation path is documented in [m4-data-pipelines.md](m4-data-pipelines.md).
 
 ## 1) Crypto market data
 
@@ -75,11 +75,11 @@ This note inventories practical, local/CI-friendly data source options for M4 in
 
 | Issue | Scope-aligned source decision linkage |
 |---|---|
-| [#14 — wire sidebar filters to dashboard data](https://github.com/fworks-tech/hashhelm/issues/14) | Keep market/feed providers queryable by selected watchlist/time-window filters so panel data can be filtered consistently |
-| [#15 — market data ingestion module](https://github.com/fworks-tech/hashhelm/issues/15) | Implement market ingestion adapter with Binance default + CoinGecko fallback and graceful degradation when provider config is unset |
-| [#16 — news feed ingestion module](https://github.com/fworks-tech/hashhelm/issues/16) | Implement news/feed ingestion normalization around RSS/Atom (`feedparser` schema + dedupe + timestamps) with NewsAPI fallback |
-| [#17 — alerts rules engine (MVP)](https://github.com/fworks-tech/hashhelm/issues/17) | Build alert rules over normalized market + high-confidence investor/developer signals, including per-signal confidence metadata |
-| [#18 — newsletter persistence and delivery (MVP)](https://github.com/fworks-tech/hashhelm/issues/18) | Implement newsletter persistence/delivery using normalized feed + market deltas, with cached fallback content and environment-based secrets |
+| [#14 — wire sidebar filters to dashboard data](https://github.com/fworks-tech/chain-telescope/issues/14) | Keep market/feed providers queryable by selected watchlist/time-window filters so panel data can be filtered consistently |
+| [#15 — market data ingestion module](https://github.com/fworks-tech/chain-telescope/issues/15) | Implement market ingestion adapter with Binance default + CoinGecko fallback and graceful degradation when provider config is unset |
+| [#16 — news feed ingestion module](https://github.com/fworks-tech/chain-telescope/issues/16) | Implement news/feed ingestion normalization around RSS/Atom (`feedparser` schema + dedupe + timestamps) with NewsAPI fallback |
+| [#17 — alerts rules engine (MVP)](https://github.com/fworks-tech/chain-telescope/issues/17) | Build alert rules over normalized market + high-confidence investor/developer signals, including per-signal confidence metadata |
+| [#18 — newsletter persistence and delivery (MVP)](https://github.com/fworks-tech/chain-telescope/issues/18) | Implement newsletter persistence/delivery using normalized feed + market deltas, with cached fallback content and environment-based secrets |
 | Proposed new issue | Provider registry + signal confidence taxonomy to standardize source metadata and alert scoring |
 
 ## Risks and prerequisites

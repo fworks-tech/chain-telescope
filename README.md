@@ -226,6 +226,6 @@ MIT — see [`LICENSE`](LICENSE).
 <!-- fworks-readme-footer v1 -->
 ## Links
 
-- Repository: https://github.com/fworks-tech/hashhelm
+- Repository: https://github.com/fworks-tech/chain-telescope
 - Portfolio: https://fworks.tech
 <!-- /fworks-readme-footer v1 -->

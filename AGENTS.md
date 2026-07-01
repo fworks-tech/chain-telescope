@@ -1,4 +1,4 @@
-# HashHelm — Agent Guide
+# ChainTelescope — Agent Guide
 
 ## Quick start
 ```powershell
@@ -71,4 +71,4 @@ CI runs these in parallel jobs (`test`, `build`, `lint`). A `maintainability` jo
 - Sidebar has 4 controls: Time Window, Watchlist, Market Source, Trend Filter
 - `app.py` uses `st.navigation` → `pages/`; the modular architecture is fully wired
 - Notebooks import from `src/` — run from repo root with `sys.path` setup
-- **Repo name is HashHelm** — "Jupyter" in the original name was vestigial (no notebooks remained); notebooks were added back in the refactor
+- **Repo name is ChainTelescope** — evolved from HashHelm

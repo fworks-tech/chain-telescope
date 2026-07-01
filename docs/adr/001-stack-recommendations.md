@@ -5,7 +5,7 @@
 
 ## Context
 
-HashHelm is a Streamlit dashboard with market data ingestion, news aggregation, alert rules, AI assistant, and newsletter persistence. The current stack works but has systemic weaknesses identified in an audit of `src/data/`:
+ChainTelescope is a Streamlit dashboard with market data ingestion, news aggregation, alert rules, AI assistant, and newsletter persistence. The current stack works but has systemic weaknesses identified in an audit of `src/data/`:
 
 - **No logging** anywhere — silent failures cascade to mock fallback
 - **No caching** — every Streamlit rerun re-fetches from external APIs

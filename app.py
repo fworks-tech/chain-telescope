@@ -6,11 +6,11 @@ from src.styles import inject_global_styles
 
 setup_logging()
 
-st.set_page_config(page_title="HashHelm", page_icon="📈", layout="wide")
+st.set_page_config(page_title="ChainTelescope", page_icon="📈", layout="wide")
 inject_global_styles()
 
 with st.sidebar:
-    st.markdown("## HashHelm")
+    st.markdown("## ChainTelescope")
     st.caption("Crypto Command Center")
 
 nav = st.navigation(

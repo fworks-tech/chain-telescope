@@ -5,7 +5,7 @@
 
 ## Context
 
-HashHelm (now ChainTelescope) is a Streamlit-based crypto dashboard. Streamlit is ideal for rapid prototyping but has production limitations:
+ChainTelescope is a Streamlit-based crypto dashboard. Streamlit is ideal for rapid prototyping but has production limitations:
 
 - **Sleep on inactivity** — Streamlit Cloud puts apps to sleep after ~7 days. Cold start takes 10-30s.
 - **No background jobs** — can't run scheduled newsletter dispatch or alert evaluation.

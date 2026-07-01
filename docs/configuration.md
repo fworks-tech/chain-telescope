@@ -1,6 +1,6 @@
 # Configuration
 
-This document lists optional environment variables and Streamlit secrets for HashHelm. For setup and run instructions, see [README.md](../README.md).
+This document lists optional environment variables and Streamlit secrets for ChainTelescope. For setup and run instructions, see [README.md](../README.md).
 
 ## Loading order
 

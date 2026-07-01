@@ -1,6 +1,6 @@
 # Architecture
 
-This document describes how HashHelm is structured today. For setup and run instructions, see [README.md](../README.md).
+This document describes how ChainTelescope is structured today. For setup and run instructions, see [README.md](../README.md).
 
 ## Overview
 
@@ -152,13 +152,13 @@ See `src/data/dashboard_query.py` for the `DashboardSnapshot` dataclass with 16 
 
 | Issue | Repository surface |
 |-------|-------------------|
-| [#12](https://github.com/fworks-tech/hashhelm/issues/12) | `app.py`, `pages/`, `src/views/` |
-| [#14](https://github.com/fworks-tech/hashhelm/issues/14) | `src/app_shell.py`, `src/data/dashboard_query.py` |
-| [#15](https://github.com/fworks-tech/hashhelm/issues/15) | `src/data/market/` |
-| [#16](https://github.com/fworks-tech/hashhelm/issues/16) | `src/data/news/` |
-| [#17](https://github.com/fworks-tech/hashhelm/issues/17) | `src/data/alerts/rules.py` |
-| [#18](https://github.com/fworks-tech/hashhelm/issues/18) | `src/data/newsletter/` |
-| [#13](https://github.com/fworks-tech/hashhelm/issues/13) | `.github/workflows/ci.yml`, `tests/test_app_smoke.py` |
+| [#12](https://github.com/fworks-tech/chain-telescope/issues/12) | `app.py`, `pages/`, `src/views/` |
+| [#14](https://github.com/fworks-tech/chain-telescope/issues/14) | `src/app_shell.py`, `src/data/dashboard_query.py` |
+| [#15](https://github.com/fworks-tech/chain-telescope/issues/15) | `src/data/market/` |
+| [#16](https://github.com/fworks-tech/chain-telescope/issues/16) | `src/data/news/` |
+| [#17](https://github.com/fworks-tech/chain-telescope/issues/17) | `src/data/alerts/rules.py` |
+| [#18](https://github.com/fworks-tech/chain-telescope/issues/18) | `src/data/newsletter/` |
+| [#13](https://github.com/fworks-tech/chain-telescope/issues/13) | `.github/workflows/ci.yml`, `tests/test_app_smoke.py` |
 
 ## Automation
 

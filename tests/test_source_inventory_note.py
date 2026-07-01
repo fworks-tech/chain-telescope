@@ -4,7 +4,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_NOTE = REPO_ROOT / "docs" / "source-inventory-m4.md"
 ARCH_DOC = REPO_ROOT / "docs" / "Architecture.md"
-REPO_ISSUES_URL = "https://github.com/fworks-tech/hashhelm/issues"
+REPO_ISSUES_URL = "https://github.com/fworks-tech/chain-telescope/issues"
 
 REQUIRED_SECTIONS = (
     "## 1) Crypto market data",
