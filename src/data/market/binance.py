@@ -1,10 +1,12 @@
 import requests
 from src.data.assets import BINANCE_SYMBOLS
 from src.data.market.config import load_market_config
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 ASSET_SYMBOLS = BINANCE_SYMBOLS
 
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10))
 def fetch_binance_series(asset: str, days: int):
     config = load_market_config()
     symbol = ASSET_SYMBOLS.get(asset)
