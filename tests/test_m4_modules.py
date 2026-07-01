@@ -38,32 +38,26 @@ class DashboardQueryTests(unittest.TestCase):
 
 
 class MarketServiceTests(unittest.TestCase):
-    @patch("src.data.market.coinbase.fetch_coinbase_series", return_value=None)
-    @patch("src.data.market.coingecko.fetch_coingecko_series", return_value=None)
-    @patch("src.data.market.binance.fetch_binance_series", return_value=None)
-    def test_fetch_price_trend_falls_back_to_mock(
-        self, _mock_binance, _mock_coingecko, _mock_coinbase
-    ):
+    @patch("src.data.market.service.fetch_ccxt_series", return_value=None)
+    def test_fetch_price_trend_falls_back_to_mock(self, _mock_ccxt):
         _, _, _, source = fetch_price_trend("BTC", 30, "30D")
         self.assertEqual(source, "mock")
 
-    @patch("src.data.market.coinbase.fetch_coinbase_series", return_value=None)
-    @patch("src.data.market.coingecko.fetch_coingecko_series", return_value=None)
-    @patch("src.data.market.binance.fetch_binance_series", return_value=None)
-    def test_fetch_price_trend_mock_source_skips_remote_providers(
-        self, _mock_binance, _mock_coingecko, _mock_coinbase
-    ):
+    @patch("src.data.market.service.fetch_ccxt_series")
+    def test_fetch_price_trend_mock_source_skips_remote_providers(self, mock_ccxt):
         _, _, _, source = fetch_price_trend("BTC", 30, "30D", market_source="mock")
         self.assertEqual(source, "mock")
-        _mock_binance.assert_not_called()
-        _mock_coingecko.assert_not_called()
-        _mock_coinbase.assert_not_called()
+        mock_ccxt.assert_not_called()
 
     @patch(
-        "src.data.market.service.binance.fetch_binance_series",
-        return_value=([1715683200000, 1715769600000], [62000.0, 62500.0], "binance"),
+        "src.data.market.service.fetch_ccxt_series",
+        return_value=(
+            [datetime(2024, 5, 14), datetime(2024, 5, 15)],
+            [62000.0, 62500.0],
+            "binance",
+        ),
     )
-    def test_fetch_price_trend_normalizes_provider_dates(self, _mock_binance):
+    def test_fetch_price_trend_normalizes_provider_dates(self, _mock_ccxt):
         dates, _, _, source = fetch_price_trend("BTC", 2, "24H")
         self.assertEqual(source, "binance")
         self.assertTrue(all(isinstance(date, datetime) for date in dates))

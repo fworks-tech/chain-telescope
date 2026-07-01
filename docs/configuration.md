@@ -26,11 +26,9 @@ When credentials are missing or provider calls fail, the assistant returns a loc
 | Variable | Required | Default | Purpose |
 |---|---|---|---|
 | `MARKET_PROVIDER` | No | `auto` | `auto`, `binance`, `coingecko`, `coinbase`, or `mock` (sidebar Source filter overrides this per session) |
-| `BINANCE_BASE_URL` | No | `https://api.binance.com` | Binance REST base URL |
-| `COINGECKO_BASE_URL` | No | `https://api.coingecko.com/api/v3` | CoinGecko REST base URL |
-| `MARKET_REQUEST_TIMEOUT_SECONDS` | No | `10` | HTTP timeout for market requests |
+| `MARKET_REQUEST_TIMEOUT_SECONDS` | No | `10` | HTTP timeout for market requests (used only by legacy `requests` calls) |
 
-`auto` tries Binance, then CoinGecko, then Coinbase, then mock series from `src/data/mock_market.py`.
+`auto` tries Binance, then CoinGecko, then Coinbase, then mock series from `src/data/mock_market.py`. Exchange endpoints are managed internally by `ccxt`.
 
 ## News feeds
 

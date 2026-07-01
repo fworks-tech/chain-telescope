@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from requests.exceptions import RequestException
+import ccxt
 from src.data.market import service as market_service
 from src.data.market.service import fetch_price_trend
 from src.data.news import ingestion as news_ingestion
@@ -11,18 +11,10 @@ from src.data.news.ingestion import load_news_items
 class LoggingTests(unittest.TestCase):
     @patch.object(market_service.logger, "warning")
     @patch(
-        "src.data.market.binance.fetch_binance_series",
-        side_effect=RequestException("binance down"),
+        "src.data.market.service.fetch_ccxt_series",
+        side_effect=ccxt.NetworkError("api down"),
     )
-    @patch(
-        "src.data.market.coingecko.fetch_coingecko_series",
-        side_effect=RequestException("coingecko down"),
-    )
-    @patch(
-        "src.data.market.coinbase.fetch_coinbase_series",
-        side_effect=RequestException("coinbase down"),
-    )
-    def test_logger_warning_on_all_providers_fail(self, _mock_cb, _mock_cg, _mock_bn, mock_logger):
+    def test_logger_warning_on_all_providers_fail(self, mock_ccxt, mock_logger):
         fetch_price_trend("BTC", 30, "30D")
         self.assertGreaterEqual(mock_logger.call_count, 1)
 
