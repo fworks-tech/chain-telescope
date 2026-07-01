@@ -10,7 +10,7 @@ from src.data.dashboard_query import DashboardSnapshot
 
 
 def _empty_snapshot(**overrides) -> DashboardSnapshot:
-    base = DashboardSnapshot(
+    defaults = dict(
         time_window="30D",
         watchlist=["BTC"],
         trend_filter="all",
@@ -28,7 +28,8 @@ def _empty_snapshot(**overrides) -> DashboardSnapshot:
         news=[],
         news_items=[],
     )
-    return base
+    defaults.update(overrides)
+    return DashboardSnapshot(**defaults)
 
 
 class ComponentGuardTests(unittest.TestCase):
