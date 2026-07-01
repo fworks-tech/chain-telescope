@@ -2,6 +2,8 @@
 
 A modern command center for crypto intelligence, built to transform noisy market data into practical decisions.
 
+Live at [https://chain-telescope.streamlit.app](https://chain-telescope.streamlit.app/)
+
 ## Purpose
 This project delivers a focused crypto analysis experience with:
 - Market monitoring and watchlists
