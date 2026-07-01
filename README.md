@@ -227,5 +227,6 @@ MIT — see [`LICENSE`](LICENSE).
 ## Links
 
 - Repository: https://github.com/fworks-tech/chain-telescope
+- Live app: https://chain-telescope.streamlit.app/
 - Portfolio: https://fworks.tech
 <!-- /fworks-readme-footer v1 -->
