@@ -30,7 +30,7 @@ CI runs these in parallel jobs (`test`, `build`, `lint`). A `maintainability` jo
 - `src/views/__init__.py` — cached dashboard snapshot wrapper (`@st.cache_data(ttl=30)`)
 - `tests/` — unittest files (no pytest)
 - `notebooks/` — Jupyter notebooks for EDA, strategies, reports
-- `docs/` — architecture, configuration, source inventory
+- `docs/` — architecture, configuration, deployment, operations, development guide
 - `scripts/pr-skill.py` — PR automation tool (create/validate/summary)
 
 ## Ruff conventions

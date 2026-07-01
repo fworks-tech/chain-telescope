@@ -4,15 +4,37 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] — 2026-07-01
 
 ### Added
 
-- Planned follow-ups: scheduled newsletter jobs, outbound delivery providers, and browser-based visual regression in CI.
+- Renamed project to HashHelm (was Jupyter-Crypto-Wizard).
+- `st.navigation` routing in `app.py` — fully modular architecture via `pages/` → `src/views/` → `src/components/`.
+- `src/logging.py` with centralized loguru sink configuration.
+- `src/views/__init__.py` with `@st.cache_data(ttl=30)` cached snapshot wrapper.
+- `src/styles.py` global CSS injection (wired into `app.py`).
+- `notebooks/` directory with starter EDA notebook importing from `src/`.
+- `docs/deployment.md` — Docker, domain setup, CI/CD guide.
+- `docs/operations.md` — production runbook with health checks, monitoring, backups, incident response.
+- `docs/development.md` — contributor guide with setup, conventions, workflow.
+- `docs/adr/001-stack-recommendations.md` — architecture review and library upgrade roadmap.
+- `loguru` structured logging across market, news, and newsletter modules.
+- `tenacity` retry with exponential backoff on all three exchange API fetchers.
+- 8 new tests: `test_caching.py`, `test_retry.py`, `test_logging.py` (43 total).
+- PR automation: `scripts/pr-skill.py` (create/validate/summary subcommands).
 
 ### Changed
 
-- None.
+- `app.py` rewritten from 160 lines to 22 — delegates to modular architecture.
+- Docs consolidated: `m4-data-pipelines.md`, `validation-and-manual-qa.md`, `agent-skills.md` merged into `Architecture.md` or deleted.
+- `AGENTS.md` rewritten with verified facts, sidebar filter docs, 3 market providers.
+
+### Removed
+
+- Inline rendering and sidebar widgets from `app.py` (now in `src/views/` and `src/app_shell.py`).
+- 8 unused dependencies: `matplotlib`, `torch`, `torchvision`, `tqdm`, `fonttools`, `filelock`, `Pygments`, `schedule`.
+- `scripts/QUICK_REF.md` (duplicate of `PR_SKILL_GUIDE.md`).
+- Jupyter vestiges: stale notebooks scope in `pr-skill.py`, dead references in docs.
 
 ## [0.2.0] - 2026-05-12
 
@@ -48,6 +70,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - README runbook, validation checklists, and `docs/Architecture.md`.
 - Python ignore rules for virtual environments, caches, and local env files.
 
-[Unreleased]: https://github.com/fworks-tech/hashhelm/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/fworks-tech/hashhelm/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/fworks-tech/hashhelm/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/fworks-tech/hashhelm/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/fworks-tech/hashhelm/releases/tag/v0.1.0
