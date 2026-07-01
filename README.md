@@ -1,6 +1,6 @@
-# Jupyter Crypto Wizard
+# HashHelm
 
-A modern platform for crypto intelligence, built to transform noisy market data into practical decisions.
+A modern command center for crypto intelligence, built to transform noisy market data into practical decisions.
 
 ## Purpose
 This project delivers a focused crypto analysis experience with:
@@ -226,6 +226,6 @@ MIT — see [`LICENSE`](LICENSE).
 <!-- fworks-readme-footer v1 -->
 ## Links
 
-- Repository: https://github.com/fworks-tech/Jupyter-Crypto-Wizard
+- Repository: https://github.com/fworks-tech/hashhelm
 - Portfolio: https://fworks.tech
 <!-- /fworks-readme-footer v1 -->

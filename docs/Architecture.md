@@ -1,6 +1,6 @@
 # Architecture
 
-This document describes how the Crypto Market Analyzer is structured today and how it is expected to evolve. For setup and run instructions, see [README.md](../README.md).
+This document describes how HashHelm is structured today and how it is expected to evolve. For setup and run instructions, see [README.md](../README.md).
 
 ## Overview
 
@@ -12,8 +12,6 @@ The product direction in [README.md](../README.md) calls for Python data pipelin
 
 - [CHANGELOG.md](../CHANGELOG.md) — release history
 - [configuration.md](configuration.md) — environment variables and secrets
-- [m4-data-pipelines.md](m4-data-pipelines.md) — snapshot assembly, ingestion modules, and issue mapping
-- [validation-and-manual-qa.md](validation-and-manual-qa.md) — automated checks and manual smoke tests
 - [source-inventory-m4.md](source-inventory-m4.md) — M4 source discovery research
 
 ## Runtime flow
@@ -61,8 +59,9 @@ On each run, `app.py` configures the page, applies global styles, and delegates 
 | [`src/data/alerts/rules.py`](../src/data/alerts/rules.py) | MVP threshold rules for alert output |
 | [`src/data/newsletter/`](../src/data/newsletter/) | Local subscription persistence and stub delivery |
 | [`src/validation/email.py`](../src/validation/email.py) | Newsletter email validation |
+| [`notebooks/`](../notebooks/) | Jupyter notebooks for EDA, strategy backtesting, and report generation |
 
-Import flow: routed pages import view renderers and shared filters. Views call `load_dashboard_snapshot(time_window, watchlist)` and pass the snapshot into components.
+Import flow: routed pages import view renderers and shared filters. Views call `load_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)` and pass the snapshot into components.
 
 ## UI composition
 
@@ -119,7 +118,7 @@ M4 source discovery for market, feed, investor, and developer inputs is document
 | `plotly` | Price trend and risk charts | Same |
 | `requests` | Assistant and market provider HTTP calls | HTTP market and news sources |
 | `feedparser` | RSS/Atom ingestion with fallback | Expanded feed ingestion |
-| `schedule` | Not used in `app.py` | Periodic jobs (reports, newsletter) |
+| `ipywidgets` | Jupyter notebook widgets for exploration | Same |
 | `pydantic` | Market and feed models | Validated config and API models |
 | `python-dotenv` | Local provider and newsletter configuration | Local and deployment secrets |
 
@@ -135,9 +134,32 @@ CI and local setup install the full [`requirements.txt`](../requirements.txt).
 | [`requirements.txt`](../requirements.txt) | Python dependencies |
 | [`docs/`](../docs/) | Architecture, configuration, validation, and automation playbooks |
 
+## Snapshot assembly flow
+
+Filters from `src/app_shell.py` flow into `load_dashboard_snapshot()` which orchestrates:
+
+1. Market providers in `src/data/market/` (Binance → CoinGecko → Coinbase → mock fallback)
+2. News ingestion in `src/data/news/` (RSS/Atom feeds → fallback items)
+3. Alert rules in `src/data/alerts/rules.py` (drawdown and momentum thresholds)
+4. Newsletter persistence in `src/data/newsletter/` (local JSON store + stub delivery)
+
+See `src/data/dashboard_query.py` for the `DashboardSnapshot` dataclass with 16 fields.
+
+## Issue mapping
+
+| Issue | Repository surface |
+|-------|-------------------|
+| [#12](https://github.com/fworks-tech/hashhelm/issues/12) | `app.py`, `pages/`, `src/views/` |
+| [#14](https://github.com/fworks-tech/hashhelm/issues/14) | `src/app_shell.py`, `src/data/dashboard_query.py` |
+| [#15](https://github.com/fworks-tech/hashhelm/issues/15) | `src/data/market/` |
+| [#16](https://github.com/fworks-tech/hashhelm/issues/16) | `src/data/news/` |
+| [#17](https://github.com/fworks-tech/hashhelm/issues/17) | `src/data/alerts/rules.py` |
+| [#18](https://github.com/fworks-tech/hashhelm/issues/18) | `src/data/newsletter/` |
+| [#13](https://github.com/fworks-tech/hashhelm/issues/13) | `.github/workflows/ci.yml`, `tests/test_app_smoke.py` |
+
 ## Automation
 
-- **CI** ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)): on push and pull request to `main`, `master`, and `feat/**`, installs dependencies on Python 3.11 and runs four jobs:
+- **CI** ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)): on push to `main` and on any pull request, installs dependencies on Python 3.11 and runs four jobs:
   - `test` — `unittest` discovery for validation helpers, mock data adapters, assistant wiring, doc contracts, and a Streamlit `AppTest` smoke run of `app.py`
   - `build` — `py_compile` on `app.py`, all `src/**/*.py` modules, routed `pages/**/*.py` entrypoints, and a Streamlit entrypoint import smoke check
   - `lint` — Ruff lint and format checks on `app.py`, `src/`, and `tests/` using [`pyproject.toml`](../pyproject.toml)
