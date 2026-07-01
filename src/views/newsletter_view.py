@@ -1,4 +1,5 @@
 import streamlit as st
+
 from src.components.newsletter import render_newsletter
 
 

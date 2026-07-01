@@ -1,6 +1,6 @@
 # Architecture
 
-This document describes how HashHelm is structured today and how it is expected to evolve. For setup and run instructions, see [README.md](../README.md).
+This document describes how HashHelm is structured today. For setup and run instructions, see [README.md](../README.md).
 
 ## Overview
 
@@ -42,7 +42,7 @@ On each run, `app.py` configures the page, applies global styles, and delegates 
 |------|------|
 | [`app.py`](../app.py) | Streamlit entrypoint and navigation shell |
 | [`pages/`](../pages/) | Routed Dashboard, Alerts, News, Risk, and Newsletter pages |
-| [`src/app_shell.py`](../src/app_shell.py) | Sidebar branding, time window, and watchlist filters |
+| [`src/app_shell.py`](../src/app_shell.py) | Sidebar filter engine (time window, watchlist, market source, trend filter) |
 | [`src/styles.py`](../src/styles.py) | Global CSS injection |
 | [`src/components/dashboard_header.py`](../src/components/dashboard_header.py) | Greeting and UTC snapshot caption |
 | [`src/components/kpi_row.py`](../src/components/kpi_row.py) | KPI card row |
@@ -59,6 +59,8 @@ On each run, `app.py` configures the page, applies global styles, and delegates 
 | [`src/data/alerts/rules.py`](../src/data/alerts/rules.py) | MVP threshold rules for alert output |
 | [`src/data/newsletter/`](../src/data/newsletter/) | Local subscription persistence and stub delivery |
 | [`src/validation/email.py`](../src/validation/email.py) | Newsletter email validation |
+| [`src/logging.py`](../src/logging.py) | Structured loguru sink configuration |
+| [`src/views/__init__.py`](../src/views/__init__.py) | Cached dashboard snapshot wrapper (`@st.cache_data(ttl=30)`) |
 | [`notebooks/`](../notebooks/) | Jupyter notebooks for EDA, strategy backtesting, and report generation |
 
 Import flow: routed pages import view renderers and shared filters. Views call `load_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)` and pass the snapshot into components.
@@ -87,8 +89,6 @@ Styling uses injected CSS for cards and panels; layout uses Streamlit columns.
 4. News ingestion in `src/data/news/` loads RSS/Atom feeds or fallback items and filters by watchlist tags/titles when possible.
 5. Alert rules in `src/data/alerts/rules.py` evaluate threshold conditions over the selected price series.
 6. Components and the assistant consume the same snapshot so visible panels and fallback chat context stay aligned.
-
-See [m4-data-pipelines.md](m4-data-pipelines.md) for module-level detail.
 
 ## Data today vs planned
 
@@ -119,6 +119,8 @@ M4 source discovery for market, feed, investor, and developer inputs is document
 | `requests` | Assistant and market provider HTTP calls | HTTP market and news sources |
 | `feedparser` | RSS/Atom ingestion with fallback | Expanded feed ingestion |
 | `ipywidgets` | Jupyter notebook widgets for exploration | Same |
+| `loguru` | Structured logging across all data modules | Same |
+| `tenacity` | Retry with exponential backoff on exchange API calls | Same |
 | `pydantic` | Market and feed models | Validated config and API models |
 | `python-dotenv` | Local provider and newsletter configuration | Local and deployment secrets |
 
@@ -132,6 +134,7 @@ CI and local setup install the full [`requirements.txt`](../requirements.txt).
 | [`pages/`](../pages/) | Streamlit routed pages |
 | [`src/`](../src/) | Streamlit UI modules, query layer, ingestion helpers, and validation |
 | [`requirements.txt`](../requirements.txt) | Python dependencies |
+| [`notebooks/`](../notebooks/) | Jupyter notebooks for EDA, strategies, and report generation |
 | [`docs/`](../docs/) | Architecture, configuration, validation, and automation playbooks |
 
 ## Snapshot assembly flow
@@ -167,13 +170,11 @@ See `src/data/dashboard_query.py` for the `DashboardSnapshot` dataclass with 16 
 - **Visual regression**: deferred until multi-page navigation stabilizes (#12). The planned pilot is Playwright snapshot checks against `streamlit run app.py` on localhost for the dashboard and one alternate route, with dynamic KPI and timestamp regions masked. Baseline updates will be documented alongside that pilot; CI does not run browser screenshots today.
 - **Dev Container** ([`.devcontainer/devcontainer.json`](../.devcontainer/devcontainer.json)): installs dependencies via `updateContentCommand` on create and update. Streamlit is not started automatically; run `streamlit run app.py` from the repository root after the container is ready.
 
-Manual and automated validation steps are listed in [validation-and-manual-qa.md](validation-and-manual-qa.md).
-
 ## Evolution
 
 Near-term architecture aligned with [README.md](../README.md) product scope:
 
 - Expand provider coverage and caching for market and feed ingestion
 - Add richer alert scoring and investor/developer signal inputs
-- Add scheduled workers for newsletter generation and alert evaluation, using packages already listed in `requirements.txt`
+- Add scheduled workers for newsletter generation and alert evaluation
 - Keep active code at the repo root, under `src/`, under `pages/`, and under `docs/`

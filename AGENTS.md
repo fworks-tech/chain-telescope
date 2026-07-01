@@ -26,6 +26,8 @@ CI runs these in parallel jobs (`test`, `build`, `lint`). A `maintainability` jo
 - `src/data/` — dashboard query, market providers (binance/coingecko/coinbase), news, alerts, mock
 - `src/data/assets.py` — 100+ asset symbols with CoinGecko/Coinbase/Binance ID mappings
 - `src/validation/email.py` — email validation (`@` and `.` check)
+- `src/logging.py` — structured loguru sink configuration
+- `src/views/__init__.py` — cached dashboard snapshot wrapper (`@st.cache_data(ttl=30)`)
 - `tests/` — unittest files (no pytest)
 - `notebooks/` — Jupyter notebooks for EDA, strategies, reports
 - `docs/` — architecture, configuration, source inventory
@@ -41,6 +43,7 @@ CI runs these in parallel jobs (`test`, `build`, `lint`). A `maintainability` jo
 - Streamlit `AppTest` smoke tests in `test_app_smoke.py` render the full UI.
 - Market/news data falls back to mock when remote providers are unavailable — no live API keys needed.
 - Doc-contract test: `python -m unittest tests/test_source_inventory_note.py`
+- New test files: `test_caching.py`, `test_retry.py`, `test_logging.py` (43 total, was 35)
 
 ## Config & secrets
 - Loading order: Streamlit secrets (`.streamlit/secrets.toml`) → env vars → defaults

@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 
 import feedparser
 from dotenv import load_dotenv
+from loguru import logger
 from src.data.mock_market import news_snapshot
 from src.data.news.models import FeedItem
 
@@ -110,7 +111,8 @@ def load_news_items(watchlist: list[str] | None = None) -> list[FeedItem]:
     for url in _feed_urls():
         try:
             collected.extend(_parse_feed(url))
-        except Exception:
+        except Exception as exc:
+            logger.warning("Feed parse failed for {}: {}", url, exc)
             continue
 
     if not collected:

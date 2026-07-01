@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pandas as pd
+from loguru import logger
 from src.data.market import binance, coinbase, coingecko
 from src.data.market.config import load_market_config
 from src.data.mock_market import TIME_WINDOW_DAYS, price_trend_series
@@ -20,7 +21,8 @@ def fetch_price_trend(asset: str, days: int, time_window: str, market_source: st
                 dates = _normalize_dates(dates)
                 trend = pd.Series(prices).rolling(5, min_periods=1).mean()
                 return dates, prices, trend, source
-        except Exception:
+        except Exception as exc:
+            logger.warning("Provider {} failed for {}: {}", name, asset, exc)
             continue
 
     return _mock_series(asset, days, time_window)

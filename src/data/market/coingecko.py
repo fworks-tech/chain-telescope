@@ -1,10 +1,12 @@
 import requests
 from src.data.assets import COINGECKO_IDS
 from src.data.market.config import load_market_config
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 ASSET_IDS = COINGECKO_IDS
 
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10))
 def fetch_coingecko_series(asset: str, days: int):
     config = load_market_config()
     asset_id = ASSET_IDS.get(asset)

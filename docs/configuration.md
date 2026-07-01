@@ -1,6 +1,6 @@
 # Configuration
 
-This document lists optional environment variables and Streamlit secrets for the Crypto Market Analyzer. For setup and run instructions, see [README.md](../README.md). For how these settings connect to ingestion modules, see [m4-data-pipelines.md](m4-data-pipelines.md).
+This document lists optional environment variables and Streamlit secrets for HashHelm. For setup and run instructions, see [README.md](../README.md).
 
 ## Loading order
 
@@ -67,6 +67,4 @@ NEWSLETTER_PROVIDER=stub
 
 - [CHANGELOG.md](../CHANGELOG.md)
 - [Architecture.md](Architecture.md)
-- [m4-data-pipelines.md](m4-data-pipelines.md)
-- [validation-and-manual-qa.md](validation-and-manual-qa.md)
 - [source-inventory-m4.md](source-inventory-m4.md)
