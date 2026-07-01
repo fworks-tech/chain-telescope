@@ -8,13 +8,19 @@ from src.data.dashboard_query import DashboardSnapshot
 def render_risk_graph(snapshot: DashboardSnapshot):
     with st.container(border=True):
         st.subheader("Risk graph")
+        if not snapshot.risk_scores or not snapshot.risk_labels:
+            st.caption("Risk data unavailable for the current selection.")
+            return
+        scores = snapshot.risk_scores[:4]
+        labels = snapshot.risk_labels[:4]
+        colors = snapshot.risk_colors[:4] if snapshot.risk_colors else None
         rfig = go.Figure(
             data=[
                 go.Bar(
-                    x=snapshot.risk_scores,
-                    y=snapshot.risk_labels,
+                    x=scores,
+                    y=labels,
                     orientation="h",
-                    marker=dict(color=snapshot.risk_colors),
+                    marker=dict(color=colors),
                 )
             ]
         )

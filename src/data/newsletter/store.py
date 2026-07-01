@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
+from loguru import logger
 
 load_dotenv()
 
@@ -28,23 +29,31 @@ def _ensure_store() -> None:
 
 def list_subscriptions() -> list[Subscription]:
     _ensure_store()
-    payload = json.loads(SUBSCRIPTIONS_FILE.read_text(encoding="utf-8"))
-    return [Subscription(**item) for item in payload]
+    try:
+        payload = json.loads(SUBSCRIPTIONS_FILE.read_text(encoding="utf-8"))
+        return [Subscription(**item) for item in payload]
+    except (json.JSONDecodeError, OSError) as exc:
+        logger.warning("Failed to load subscriptions: {}", exc)
+        return []
 
 
-def save_subscription(email: str, frequency: str, format: str) -> Subscription:
+def save_subscription(email: str, frequency: str, format: str) -> Subscription | None:
     _ensure_store()
-    subscriptions = list_subscriptions()
     record = Subscription(
         email=email.strip().lower(),
         frequency=frequency,
         format=format,
         created_at=datetime.now(UTC).isoformat(),
     )
-    subscriptions = [item for item in subscriptions if item.email != record.email]
-    subscriptions.append(record)
-    SUBSCRIPTIONS_FILE.write_text(
-        json.dumps([asdict(item) for item in subscriptions], indent=2),
-        encoding="utf-8",
-    )
-    return record
+    try:
+        subscriptions = list_subscriptions()
+        subscriptions = [item for item in subscriptions if item.email != record.email]
+        subscriptions.append(record)
+        SUBSCRIPTIONS_FILE.write_text(
+            json.dumps([asdict(item) for item in subscriptions], indent=2),
+            encoding="utf-8",
+        )
+        return record
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("Failed to save subscription: {}", exc)
+        return None

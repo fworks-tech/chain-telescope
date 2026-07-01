@@ -82,6 +82,32 @@ class AlertsRulesTests(unittest.TestCase):
         alerts = evaluate_alert_rules("30D", ["BTC"], [100.0, 112.0])
         self.assertTrue(any("momentum" in alert for alert in alerts))
 
+    def test_evaluate_alert_rules_handles_empty_prices(self):
+        alerts = evaluate_alert_rules("30D", ["BTC"], [])
+        self.assertTrue(any("No price data" in alert for alert in alerts))
+
+
+class MarketConfigTests(unittest.TestCase):
+    @patch.dict("os.environ", {"MARKET_REQUEST_TIMEOUT_SECONDS": "not-a-number"}, clear=True)
+    def test_load_market_config_falls_back_on_bad_timeout(self):
+        from src.data.market.config import load_market_config
+
+        config = load_market_config()
+        self.assertEqual(config.request_timeout_seconds, 10.0)
+
+
+class NormalizeDatesTests(unittest.TestCase):
+    def test_normalize_dates_handles_unparseable_values(self):
+        from src.data.market.service import _normalize_dates
+
+        now = datetime.now()
+        result = _normalize_dates([now, "not-a-date", None, 1715683200000])
+        self.assertEqual(len(result), 4)
+        self.assertIsInstance(result[0], datetime)
+        self.assertIsInstance(result[1], datetime)
+        self.assertIsInstance(result[2], datetime)
+        self.assertIsInstance(result[3], datetime)
+
 
 if __name__ == "__main__":
     unittest.main()

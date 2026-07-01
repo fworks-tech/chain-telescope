@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 import streamlit as st
 
@@ -12,5 +12,5 @@ def render_dashboard_header(
     st.caption(
         f"Tracking {watchlist_label} over {time_window} from {market_source} "
         f"with {trend_label} trend filter. "
-        f"Updated {datetime.utcnow():%Y-%m-%d %H:%M} UTC."
+        f"Updated {datetime.now(UTC):%Y-%m-%d %H:%M} UTC."
     )

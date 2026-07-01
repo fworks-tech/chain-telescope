@@ -59,11 +59,13 @@ def _mock_series(asset: str, days: int, time_window: str):
 def _normalize_dates(dates):
     normalized = []
     for value in dates:
-        if isinstance(value, datetime):
-            normalized.append(value)
-            continue
-        if isinstance(value, (int, float)):
-            normalized.append(pd.to_datetime(value, unit="ms").to_pydatetime())
-            continue
-        normalized.append(pd.to_datetime(value).to_pydatetime())
+        try:
+            if isinstance(value, datetime):
+                normalized.append(value)
+            elif isinstance(value, (int, float)):
+                normalized.append(pd.to_datetime(value, unit="ms").to_pydatetime())
+            else:
+                normalized.append(pd.to_datetime(value).to_pydatetime())
+        except Exception:
+            normalized.append(datetime.now())
     return normalized
