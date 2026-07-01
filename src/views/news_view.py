@@ -1,9 +1,10 @@
 import streamlit as st
-from src.data.dashboard_query import load_dashboard_snapshot
+
+from src.views import cached_dashboard_snapshot
 
 
 def render_news_page(time_window: str, watchlist: list[str], market_source: str, trend_filter: str):
-    snapshot = load_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)
+    snapshot = cached_dashboard_snapshot(time_window, watchlist, market_source, trend_filter)
     st.markdown("## News")
     st.caption("Normalized feed items with safe fallback when remote feeds are unavailable.")
     if not snapshot.news_items:

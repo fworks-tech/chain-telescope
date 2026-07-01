@@ -1,7 +1,10 @@
 from datetime import UTC, datetime
 
 import streamlit as st
+from src.logging import setup_logging
 from src.styles import inject_global_styles
+
+setup_logging()
 
 st.set_page_config(page_title="HashHelm", page_icon="📈", layout="wide")
 inject_global_styles()

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 import pandas as pd
-import streamlit as st
 
 from src.data.alerts.rules import evaluate_alert_rules
 from src.data.market.service import fetch_price_trend
@@ -36,7 +35,6 @@ class DashboardSnapshot:
     news_items: list
 
 
-@st.cache_data(ttl=30)
 def load_dashboard_snapshot(
     time_window: str,
     watchlist: list[str] | None = None,
