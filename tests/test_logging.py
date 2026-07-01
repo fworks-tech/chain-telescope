@@ -22,9 +22,7 @@ class LoggingTests(unittest.TestCase):
         "src.data.market.coinbase.fetch_coinbase_series",
         side_effect=RequestException("coinbase down"),
     )
-    def test_logger_warning_on_all_providers_fail(
-        self, _mock_cb, _mock_cg, _mock_bn, mock_logger
-    ):
+    def test_logger_warning_on_all_providers_fail(self, _mock_cb, _mock_cg, _mock_bn, mock_logger):
         fetch_price_trend("BTC", 30, "30D")
         self.assertGreaterEqual(mock_logger.call_count, 1)
 
