@@ -117,7 +117,7 @@ M4 source discovery for market, feed, investor, and developer inputs is document
 | `pandas` | Trending table and rolling mean on price series | Pipeline transforms and report tables |
 | `plotly` | Price trend and risk charts | Same |
 | `requests` | Assistant and market provider HTTP calls | HTTP market and news sources |
-| `feedparser` | RSS/Atom ingestion with fallback | Expanded feed ingestion |
+| `httpx` + `xml.etree.ElementTree` | RSS/Atom ingestion with fallback | Expanded feed ingestion |
 | `ipywidgets` | Jupyter notebook widgets for exploration | Same |
 | `loguru` | Structured logging across all data modules | Same |
 | `tenacity` | Retry with exponential backoff on exchange API calls | Same |

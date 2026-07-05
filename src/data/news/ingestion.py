@@ -1,12 +1,16 @@
+import email.utils
 import hashlib
 import os
+import xml.etree.ElementTree as ET
 from datetime import UTC, datetime
 
-import feedparser
+import httpx
 from dotenv import load_dotenv
 from loguru import logger
 from src.data.mock_market import news_snapshot
 from src.data.news.models import FeedItem
+
+ATOM_NS = "http://www.w3.org/2005/Atom"
 
 load_dotenv()
 
@@ -56,16 +60,51 @@ def _item_id(source: str, title: str, url: str) -> str:
 
 
 def _parse_feed(url: str) -> list[FeedItem]:
-    parsed = feedparser.parse(url)
+    resp = httpx.get(url, timeout=10, follow_redirects=True)
+    resp.raise_for_status()
+    root = ET.fromstring(resp.content)
+
+    is_atom = root.tag == f"{{{ATOM_NS}}}feed"
     items = []
-    for entry in parsed.entries[:20]:
-        title = getattr(entry, "title", "").strip()
-        link = getattr(entry, "link", "").strip()
+
+    if is_atom:
+        entries = root.findall(f"{{{ATOM_NS}}}entry")[:20]
+    else:
+        entries = root.findall(".//item")[:20]
+
+    for entry in entries:
+        if is_atom:
+            title_el = entry.find(f"{{{ATOM_NS}}}title")
+            title = title_el.text.strip() if title_el is not None and title_el.text else ""
+            link_el = entry.find(f"{{{ATOM_NS}}}link")
+            link = (link_el.get("href") or "").strip() if link_el is not None else ""
+            pub_str = (
+                entry.findtext(f"{{{ATOM_NS}}}published")
+                or entry.findtext(f"{{{ATOM_NS}}}updated")
+                or ""
+            )
+            tag_els = entry.findall(f"{{{ATOM_NS}}}category")
+            tags = [tag.get("term", "") for tag in tag_els if tag.get("term")]
+        else:
+            title = (entry.findtext("title") or "").strip()
+            link = (entry.findtext("link") or "").strip()
+            pub_str = entry.findtext("pubDate") or ""
+            tag_els = entry.findall("category")
+            tags = [tag.text for tag in tag_els if tag.text]
+
         if not title:
             continue
-        published = getattr(entry, "published_parsed", None)
-        published_at = datetime(*published[:6], tzinfo=UTC) if published else datetime.now(UTC)
-        tags = [tag.term for tag in getattr(entry, "tags", []) if getattr(tag, "term", None)]
+
+        published_at = datetime.now(UTC)
+        if pub_str:
+            try:
+                if is_atom:
+                    published_at = datetime.fromisoformat(pub_str.replace("Z", "+00:00"))
+                else:
+                    published_at = email.utils.parsedate_to_datetime(pub_str)
+            except (ValueError, TypeError):
+                published_at = datetime.now(UTC)
+
         items.append(
             FeedItem(
                 id=_item_id(url, title, link or title),
