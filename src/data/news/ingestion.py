@@ -59,63 +59,73 @@ def _item_id(source: str, title: str, url: str) -> str:
     return digest[:16]
 
 
+def _parse_date(date_str: str, is_atom: bool) -> datetime:
+    if not date_str:
+        return datetime.now(UTC)
+    try:
+        if is_atom:
+            return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+        return email.utils.parsedate_to_datetime(date_str)
+    except (ValueError, TypeError):
+        return datetime.now(UTC)
+
+
+def _parse_atom_entry(entry: ET.Element, source: str) -> FeedItem | None:
+    title_el = entry.find(f"{{{ATOM_NS}}}title")
+    title = title_el.text.strip() if title_el is not None and title_el.text else ""
+    if not title:
+        return None
+    link_el = entry.find(f"{{{ATOM_NS}}}link")
+    link = (link_el.get("href") or "").strip() if link_el is not None else ""
+    pub_str = (
+        entry.findtext(f"{{{ATOM_NS}}}published")
+        or entry.findtext(f"{{{ATOM_NS}}}updated")
+        or ""
+    )
+    tag_els = entry.findall(f"{{{ATOM_NS}}}category")
+    tags = [tag.get("term", "") for tag in tag_els if tag.get("term")]
+    return FeedItem(
+        id=_item_id(source, title, link or title),
+        source=source,
+        published_at=_parse_date(pub_str, is_atom=True),
+        title=title,
+        url=link or source,
+        tags=tags,
+    )
+
+
+def _parse_rss_entry(entry: ET.Element, source: str) -> FeedItem | None:
+    title = (entry.findtext("title") or "").strip()
+    if not title:
+        return None
+    link = (entry.findtext("link") or "").strip()
+    pub_str = entry.findtext("pubDate") or ""
+    tag_els = entry.findall("category")
+    tags = [tag.text for tag in tag_els if tag.text]
+    return FeedItem(
+        id=_item_id(source, title, link or title),
+        source=source,
+        published_at=_parse_date(pub_str, is_atom=False),
+        title=title,
+        url=link or source,
+        tags=tags,
+    )
+
+
 def _parse_feed(url: str) -> list[FeedItem]:
     resp = httpx.get(url, timeout=10, follow_redirects=True)
     resp.raise_for_status()
     root = ET.fromstring(resp.content)
 
     is_atom = root.tag == f"{{{ATOM_NS}}}feed"
-    items = []
 
     if is_atom:
         entries = root.findall(f"{{{ATOM_NS}}}entry")[:20]
     else:
         entries = root.findall(".//item")[:20]
 
-    for entry in entries:
-        if is_atom:
-            title_el = entry.find(f"{{{ATOM_NS}}}title")
-            title = title_el.text.strip() if title_el is not None and title_el.text else ""
-            link_el = entry.find(f"{{{ATOM_NS}}}link")
-            link = (link_el.get("href") or "").strip() if link_el is not None else ""
-            pub_str = (
-                entry.findtext(f"{{{ATOM_NS}}}published")
-                or entry.findtext(f"{{{ATOM_NS}}}updated")
-                or ""
-            )
-            tag_els = entry.findall(f"{{{ATOM_NS}}}category")
-            tags = [tag.get("term", "") for tag in tag_els if tag.get("term")]
-        else:
-            title = (entry.findtext("title") or "").strip()
-            link = (entry.findtext("link") or "").strip()
-            pub_str = entry.findtext("pubDate") or ""
-            tag_els = entry.findall("category")
-            tags = [tag.text for tag in tag_els if tag.text]
-
-        if not title:
-            continue
-
-        published_at = datetime.now(UTC)
-        if pub_str:
-            try:
-                if is_atom:
-                    published_at = datetime.fromisoformat(pub_str.replace("Z", "+00:00"))
-                else:
-                    published_at = email.utils.parsedate_to_datetime(pub_str)
-            except (ValueError, TypeError):
-                published_at = datetime.now(UTC)
-
-        items.append(
-            FeedItem(
-                id=_item_id(url, title, link or title),
-                source=url,
-                published_at=published_at,
-                title=title,
-                url=link or url,
-                tags=tags,
-            )
-        )
-    return items
+    parser = _parse_atom_entry if is_atom else _parse_rss_entry
+    return [item for entry in entries if (item := parser(entry, url)) is not None]
 
 
 def _dedupe_items(items: list[FeedItem]) -> list[FeedItem]:
