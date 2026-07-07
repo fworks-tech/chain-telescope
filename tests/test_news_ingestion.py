@@ -3,9 +3,9 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 from src.data.news.ingestion import (
+    ATOM_NS,
     _parse_atom_entry,
     _parse_rss_entry,
-    ATOM_NS,
 )
 
 ATOM_XML = """<?xml version="1.0" encoding="UTF-8"?>

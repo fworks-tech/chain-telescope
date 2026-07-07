@@ -78,9 +78,7 @@ def _parse_atom_entry(entry: ET.Element, source: str) -> FeedItem | None:
     link_el = entry.find(f"{{{ATOM_NS}}}link")
     link = (link_el.get("href") or "").strip() if link_el is not None else ""
     pub_str = (
-        entry.findtext(f"{{{ATOM_NS}}}published")
-        or entry.findtext(f"{{{ATOM_NS}}}updated")
-        or ""
+        entry.findtext(f"{{{ATOM_NS}}}published") or entry.findtext(f"{{{ATOM_NS}}}updated") or ""
     )
     tag_els = entry.findall(f"{{{ATOM_NS}}}category")
     tags = [tag.get("term", "") for tag in tag_els if tag.get("term")]
