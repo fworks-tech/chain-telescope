@@ -4,7 +4,12 @@ This document describes how ChainTelescope is structured today. For setup and ru
 
 ## Overview
 
-The application is a Streamlit client with a thin entrypoint in [`app.py`](../app.py), routed pages under [`pages/`](../pages/), and UI modules under [`src/`](../src/). The browser talks to a Streamlit server that reruns the entry script on interaction. There is no separate backend service or job runner in the repository yet.
+The application has two UI layers that share the same data and API layer:
+
+1. **Streamlit client** (legacy, local dev) — entrypoint in [`app.py`](../app.py), routed pages under [`pages/`](../pages/), UI modules under [`src/`](../src/). The browser talks to a Streamlit server that reruns the entry script on interaction.
+2. **React SPA** (primary, Vercel-deployed) — lives under [`frontend/`](../frontend/), consumes the FastAPI REST API at [`src/api.py`](../src/api.py). Deployed on Vercel alongside the FastAPI backend.
+
+Both UIs consume the same data layer in [`src/data/`](../src/data/) and the same FastAPI endpoints. Streamlit is kept as a rapid-prototyping fallback; the React SPA is the deployment target.
 
 The product direction in [README.md](../README.md) calls for Python data pipelines, alerts, and newsletter automation. Market and feed ingestion modules are wired through a shared dashboard query layer with mock and remote fallbacks.
 
@@ -15,6 +20,8 @@ The product direction in [README.md](../README.md) calls for Python data pipelin
 - [source-inventory-m4.md](source-inventory-m4.md) — M4 source discovery research
 
 ## Runtime flow
+
+### Streamlit (local dev)
 
 ```mermaid
 flowchart LR
@@ -35,6 +42,25 @@ flowchart LR
 ```
 
 On each run, `app.py` configures the page, applies global styles, and delegates to `st.navigation` routes in `pages/`. Shared sidebar filters come from [`src/app_shell.py`](../src/app_shell.py). Dashboard panels consume a `DashboardSnapshot` from [`src/data/dashboard_query.py`](../src/data/dashboard_query.py).
+
+### FastAPI + React SPA (Vercel, production)
+
+```mermaid
+flowchart LR
+  Browser[React SPA]
+  VercelEdge[Vercel edge]
+  FastAPI[FastAPI /api/*]
+  QueryLayer[dashboard_query]
+  Providers[market_and_news_modules]
+
+  Browser -->|GET /| VercelEdge
+  VercelEdge -->|static| Browser
+  Browser -->|GET /api/*| FastAPI
+  FastAPI --> QueryLayer
+  QueryLayer --> Providers
+```
+
+Vercel routes all `/api/*` requests to the FastAPI serverless function at `src/api.py` and all other requests to the React SPA static build in `frontend/dist/`. The React SPA calls the FastAPI endpoints for all data (snapshot, news, alerts, assistant). See [ADR-003](adr/003-fastapi-react-vercel.md) for the full deployment architecture.
 
 ## Module map
 
@@ -124,15 +150,16 @@ M4 source discovery for market, feed, investor, and developer inputs is document
 | `pydantic` | Market and feed models | Validated config and API models |
 | `python-dotenv` | Local provider and newsletter configuration | Local and deployment secrets |
 
-CI and local setup install the full [`requirements.txt`](../requirements.txt).
+CI and local setup install the full [`requirements.txt`](../requirements.txt). The React frontend dependencies are in [`frontend/package.json`](../frontend/package.json).
 
 ## Repository boundaries
 
 | Path | Role |
 |------|------|
-| [`app.py`](../app.py) | Production UI entrypoint |
-| [`pages/`](../pages/) | Streamlit routed pages |
-| [`src/`](../src/) | Streamlit UI modules, query layer, ingestion helpers, and validation |
+| [`app.py`](../app.py) | Streamlit UI entrypoint (local dev fallback) |
+| [`pages/`](../pages/) | Streamlit routed pages (local dev fallback) |
+| [`src/`](../src/) | Python: FastAPI API, data layer, validation, logging |
+| [`frontend/`](../frontend/) | React SPA (Vite + TypeScript) — primary production UI |
 | [`requirements.txt`](../requirements.txt) | Python dependencies |
 | [`notebooks/`](../notebooks/) | Jupyter notebooks for EDA, strategies, and report generation |
 | [`docs/`](../docs/) | Architecture, configuration, validation, and automation playbooks |
@@ -177,4 +204,6 @@ Near-term architecture aligned with [README.md](../README.md) product scope:
 - Expand provider coverage and caching for market and feed ingestion
 - Add richer alert scoring and investor/developer signal inputs
 - Add scheduled workers for newsletter generation and alert evaluation
-- Keep active code at the repo root, under `src/`, under `pages/`, and under `docs/`
+- **Migrate Streamlit UI to React SPA** (FastAPI + React on Vercel per [ADR-003](adr/003-fastapi-react-vercel.md))
+- Phase out Streamlit pages once React reaches feature parity
+- Add frontend tests and type-checking to CI after MVP
