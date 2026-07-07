@@ -81,6 +81,11 @@ None.
 ## Migration Plan
 
 This MVP is the first step of a gradual migration:
-1. **MVP** (this spec) — FastAPI + React SPA with Dashboard, News, Risk, Assistant pages
-2. **Phase 2** — Add remaining pages (Newsletter, Alerts standalone), parity with Streamlit
+1. **MVP** (this spec) — FastAPI + React SPA with Dashboard, News, Risk pages; Coming Soon placeholders for missing components
+2. **Phase 2** — Implement remaining components (see tracked issues):
+   - [#98 Trending Report table](https://github.com/fworks-tech/hasheyes/issues/98)
+   - [#99 Sidebar Filters](https://github.com/fworks-tech/hasheyes/issues/99)
+   - [#100 Alerts standalone page](https://github.com/fworks-tech/hasheyes/issues/100)
+   - [#101 Newsletter page](https://github.com/fworks-tech/hasheyes/issues/101)
+   - [#102 Assistant API endpoint](https://github.com/fworks-tech/hasheyes/issues/102)
 3. **Phase 3** — Deprecate Streamlit, remove `app.py` and `pages/`
