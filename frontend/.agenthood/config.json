@@ -1,0 +1,29 @@
+{
+  "version": "1",
+  "runtime": "claude-code",
+  "members": [
+    "the-scribe",
+    "the-architect",
+    "the-reviewer",
+    "the-tester",
+    "the-debugger",
+    "the-auditor",
+    "the-herald",
+    "the-librarian",
+    "the-doorman",
+    "the-oracle",
+    "the-envoy",
+    "the-sentinel",
+    "the-warden",
+    "the-strategist",
+    "the-steward",
+    "the-operator"
+  ],
+  "hooks": {
+    "hooksPath": ".githooks"
+  },
+  "conventions": {
+    "commitTemplate": ".gitmessage",
+    "commitlintConfig": "commitlint.config.ts"
+  }
+}
