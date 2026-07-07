@@ -58,7 +58,7 @@ class SourceInventoryNoteTests(unittest.TestCase):
         self.assertRegex(content, r"\| NewsAPI / GDELT APIs \| API \|")
         self.assertRegex(
             content,
-            r"\| Alerts/news feed \| RSS/Atom via `feedparser` \(crypto \+ official blogs \+ macro\) \| NewsAPI \(free tier\) \|",
+            r"\| Alerts/news feed \| RSS/Atom via `httpx` \+ `xml\.etree\.ElementTree` \(crypto \+ official blogs \+ macro\) \| NewsAPI \(free tier\) \|",
         )
         self.assertNotRegex(content, r"News API aggregator")
         self.assertNotRegex(content, r"News API \(free tier\)")

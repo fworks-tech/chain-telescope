@@ -10,7 +10,7 @@ ChainTelescope is a Streamlit dashboard with market data ingestion, news aggrega
 - **No logging** anywhere — silent failures cascade to mock fallback
 - **No caching** — every Streamlit rerun re-fetches from external APIs
 - **No retry/backoff** — a single network blip skips an entire provider
-- **No async** — `requests.get` and `feedparser.parse` block the Streamlit event loop
+- **No async** — `requests.get` and `httpx.get` block the Streamlit event loop
 - **No rate-limit awareness** — HTTP 429 responses are not detected
 - **No database** — newsletter subscriptions use a flat JSON file with no concurrent-write safety
 - **No background jobs** — `schedule` was removed; no recurring newsletter generation or alert evaluation
