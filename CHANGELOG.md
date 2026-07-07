@@ -28,11 +28,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `app.py` rewritten from 160 lines to 22 — delegates to modular architecture.
 - Docs consolidated: `m4-data-pipelines.md`, `validation-and-manual-qa.md`, `agent-skills.md` merged into `Architecture.md` or deleted.
 - `AGENTS.md` rewritten with verified facts, sidebar filter docs, 3 market providers.
+- `src/data/news/ingestion.py` — replaced `feedparser` with `httpx` + stdlib `xml.etree.ElementTree` for Python 3.13+ compatibility.
+
+### Added
+
+- 9 unit tests for RSS/Atom feed parsing in `tests/test_news_ingestion.py`.
+- `docs/spec/074-fix-rss-feedparser.md` — spec for feedparser replacement.
 
 ### Removed
 
 - Inline rendering and sidebar widgets from `app.py` (now in `src/views/` and `src/app_shell.py`).
 - 8 unused dependencies: `matplotlib`, `torch`, `torchvision`, `tqdm`, `fonttools`, `filelock`, `Pygments`, `schedule`.
+- `feedparser` dependency — replaced by stdlib `xml.etree.ElementTree` + existing `httpx`.
 - `scripts/QUICK_REF.md` (duplicate of `PR_SKILL_GUIDE.md`).
 - Jupyter vestiges: stale notebooks scope in `pr-skill.py`, dead references in docs.
 

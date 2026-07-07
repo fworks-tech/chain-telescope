@@ -16,12 +16,12 @@ Replace `feedparser.parse()` with `httpx.get()` (already a dependency) + stdlib 
 
 ## Acceptance Criteria
 
-- [ ] `feedparser` removed from `requirements.txt`; no new dependencies added
-- [ ] `_parse_feed()` parses RSS 2.0 feeds (title, link, pubDate, category tags)
-- [ ] `_parse_feed()` parses Atom feeds (title, link, published/updated, category tags)
-- [ ] Fallback to mock items still works when all feeds fail
-- [ ] All existing tests pass without modification
-- [ ] Documentation references to `feedparser` updated
+- [x] `feedparser` removed from `requirements.txt`; no new dependencies added
+- [x] `_parse_feed()` parses RSS 2.0 feeds (title, link, pubDate, category tags)
+- [x] `_parse_feed()` parses Atom feeds (title, link, published/updated, category tags)
+- [x] Fallback to mock items still works when all feeds fail
+- [x] All existing tests pass without modification
+- [x] Documentation references to `feedparser` updated
 
 ## Testing Strategy
 
