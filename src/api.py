@@ -9,7 +9,7 @@ from src.data.dashboard_query import DashboardSnapshot, load_dashboard_snapshot
 
 app = FastAPI(title="ChainTelescope API", version="0.1.0")
 
-origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8501").split(",")
+origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8501,http://localhost:5173").split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
