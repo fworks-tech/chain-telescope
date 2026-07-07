@@ -6,6 +6,7 @@ import PriceTrendChart from "../components/PriceTrendChart";
 import NewsFeed from "../components/NewsFeed";
 import RiskGraph from "../components/RiskGraph";
 import AlertsPanel from "../components/AlertsPanel";
+import ComingSoon from "../components/ComingSoon";
 
 export default function Dashboard() {
   const [snap, setSnap] = useState<Snapshot | null>(null);
@@ -63,6 +64,14 @@ export default function Dashboard() {
           trend={[]}
           asset={snap.primary_asset}
           source={snap.price_source}
+        />
+      </div>
+
+      <div style={{ marginBottom: 24 }}>
+        <ComingSoon
+          title="Trending Report"
+          description="Sortable table of watchlist assets ranked by sentiment, 7D change, and risk metrics. Filter by top gainers, top losers, or hot momentum assets."
+          icon="📊"
         />
       </div>
 

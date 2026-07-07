@@ -1,4 +1,4 @@
-import AssistantChat from "../components/AssistantChat";
+import ComingSoon from "../components/ComingSoon";
 
 export default function AssistantPage() {
   return (
@@ -11,9 +11,11 @@ export default function AssistantPage() {
           Ask about crypto markets, trends, and portfolio insights
         </p>
       </div>
-      <div style={{ maxWidth: 700 }}>
-        <AssistantChat />
-      </div>
+      <ComingSoon
+        title="AI Assistant"
+        description="Chat with an AI-powered crypto assistant that understands your watchlist, market trends, and risk profiles. The backend API endpoint is being implemented."
+        icon="🤖"
+      />
     </div>
   );
 }
